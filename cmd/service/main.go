@@ -6,5 +6,5 @@ import (
 
 func main() {
 	//чтение конфига
-	_ = config.MustLoad()
+	_ := config.MustLoad()
 }
