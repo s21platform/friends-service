@@ -7,7 +7,11 @@ import (
 	"github.com/s21platform/friends-service/internal/config"
 )
 
-func New(cfg *config.Config) (*sql.DB, error) {
+type Repository struct {
+	Connection *sql.DB
+}
+
+func New(cfg *config.Config) (*Repository, error) {
 	//Connect db
 	conStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
 		cfg.BD.User, cfg.BD.Password, cfg.BD.Database, cfg.BD.Host, cfg.BD.Port)
@@ -22,5 +26,5 @@ func New(cfg *config.Config) (*sql.DB, error) {
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}
-	return db, nil
+	return &Repository{db}, nil
 }
