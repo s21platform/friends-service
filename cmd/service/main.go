@@ -2,9 +2,16 @@ package main
 
 import (
 	"github.com/s21platform/friends-service/internal/config"
+	db2 "github.com/s21platform/friends-service/internal/repositore/db"
+	"log"
 )
 
 func main() {
 	//чтение конфига
-	_ = config.MustLoad()
+	cfg := config.MustLoad()
+	db, err := db2.New(cfg)
+	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
