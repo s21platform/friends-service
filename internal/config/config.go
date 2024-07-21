@@ -9,7 +9,6 @@ import (
 type Config struct {
 	Friends  Friends
 	Postgres ReadEnvBD
-	Kafka    Kafka
 }
 
 type Friends struct {
@@ -23,11 +22,6 @@ type ReadEnvBD struct {
 	Database string `env:"POSTGRES_DB"`
 	Host     string `env:"POSTGRES_HOST"`
 	Port     string `env:"POSTGRES_PORT"`
-}
-
-type Kafka struct {
-	KafkaTopic        string `env:"FRIENDS_SERVICE_NOTIFICATION_KAFKA_TOPIC"`
-	NotificationKafka string `env:"NOTIFICATION_SERVICE_FRIENDS_TOPIC"`
 }
 
 func MustLoad() *Config {
