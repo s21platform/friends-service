@@ -1,39 +1,32 @@
 package main
 
-//	func main() {
-//		cfg := &kafka.ConfigMap{
-//			"bootstrap.servers": "kafka:9092",
-//		}
-//
-// }
-//var db *sql.DB
+import (
+	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/s21platform/friends-service/internal/config"
+	"log"
+)
 
-//func processMessage(email string) {
-//	// Проверка есть ли uuid в Бд
-//	rows, err := db.Query("SELECT uuid FROM peer_invite WHERE email = $1", email)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	defer rows.Close()
-//	var uuids []string
-//	for rows.Next() {
-//		var uuid string
-//		if err := rows.Scan(&uuid); err != nil {
-//			log.Fatal(err)
-//		}
-//		uuids = append(uuids, uuid)
-//	}
-//	if err := rows.Err(); err != nil {
-//		log.Fatal(err)
-//	}
-//	// Отправка UUID в другой топик
-//	for _, uuid := range uuids {
-//		err = producer.Produce(&kafka.Message{
-//			TopicPartition: kafka.TopicPartition{Topic: &notificationsTopic, Partition: kafka.PartitionAny},
-//			Value:          []byte(fmt.Sprintf("UUID: %s", uuid)),
-//		}, nil)
-//		if err != nil {
-//			log.Printf("Failed to deliver message: %v", err)
-//		}
-//	}
-//}
+func main() {
+	//читаем конфиг
+	env := config.MustLoad()
+	//подключаем бд
+
+	cfg := &kafka.ConfigMap{
+		"bootstrap.servers": "kafka:9092",
+	}
+	consumer, err := kafka.NewConsumer(cfg)
+	if err != nil {
+		log.Fatalf("Failed to create consumer: %v", err)
+	}
+	defer consumer.Close()
+	producer, err := kafka.NewProducer(cfg)
+	if err != nil {
+		log.Fatalf("Failed to create producer: %v", err)
+	}
+	defer producer.Close()
+	//for {
+	//
+	//}
+}
+
+//var db *sql.DB

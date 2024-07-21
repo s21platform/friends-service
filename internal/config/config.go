@@ -6,8 +6,17 @@ import (
 )
 
 type Config struct {
-	Friends Friends
-	Kafka   Kafka
+	Friends  Friends
+	Kafka    Kafka
+	Postgres ReadEnvBD
+}
+
+type ReadEnvBD struct {
+	User     string `env:"POSTGRES_USER"`
+	Password string `env:"POSTGRES_PASSWORD"`
+	Database string `env:"POSTGRES_DB"`
+	Host     string `env:"POSTGRES_HOST"`
+	Port     string `env:"POSTGRES_PORT"`
 }
 
 type Friends struct {
