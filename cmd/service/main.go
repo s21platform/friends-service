@@ -10,8 +10,8 @@ func main() {
 	//чтение конфига
 	cfg := config.MustLoad()
 	db, err := db2.New(cfg)
-	defer db.Connection.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Connection.Close()
 }

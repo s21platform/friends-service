@@ -1,13 +1,14 @@
 package config
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
 	"log"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
-	Friends Friends
-	BD      ReadEnvBD
+	Friends  Friends
+	Postgres ReadEnvBD
 }
 
 type Friends struct {
