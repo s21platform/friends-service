@@ -38,7 +38,7 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 	return true, nil
 }
 
-func (r *Repository) CheckFriend(peer_1, peer_2 string) (bool, error) {
+func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 	row, err := r.Connection.Query("SELECT peer_2 FROM friends WHERE $1 AND $2", peer_1, peer_2)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -46,5 +46,5 @@ func (r *Repository) CheckFriend(peer_1, peer_2 string) (bool, error) {
 		}
 	}
 	defer row.Close()
-	return true, err
+	return false, err
 }
