@@ -3,6 +3,7 @@ package broker
 import (
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/s21platform/friends-service/internal/config"
 	"time"
 )
 
@@ -10,10 +11,22 @@ type KafkaConsumer struct {
 	Consumer *kafka.Consumer
 }
 
-func New(cfg *kafka.ConfigMap) (*KafkaConsumer, error) {
+func New() (*KafkaConsumer, error) {
+	env := config.MustLoad()
+
+	cfg := &kafka.ConfigMap{
+		"bootstrap.servers": env.Kafka.Server,
+		"group.id":          env.Kafka.GroupId,
+	}
+
 	consumer, err := kafka.NewConsumer(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Kafka consumer: %w", err)
+	}
+
+	err = consumer.SubscribeTopics([]string{env.Kafka.TopicForReading}, nil)
+	if err != nil {
+		fmt.Printf("Error subscribing: %s\n", err)
 	}
 
 	return &KafkaConsumer{
