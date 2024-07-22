@@ -18,4 +18,4 @@ WORKDIR /app
 COPY --from=builder /usr/src/service/build/main .
 COPY --from=builder /usr/src/service/build/kafka .
 
-CMD ["/app/main"]
+CMD ["/app/main","/app/kafka"]
