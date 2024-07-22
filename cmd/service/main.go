@@ -9,9 +9,9 @@ import (
 func main() {
 	//чтение конфига
 	cfg := config.MustLoad()
-	dataBase, err := db.New(cfg)
+	data, err := db.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer dataBase.Connection.Close()
+	defer data.Connection.Close()
 }
