@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/s21platform/friends-service/internal/broker"
+	"github.com/s21platform/friends-service/internal/config"
 	"time"
 )
 
 func main() {
-	consumer, err := broker.New()
+	env := config.MustLoad()
+	consumer, err := broker.New(env)
 	if err != nil {
 		fmt.Printf("Error creating consumer: %s\n", err)
 	}

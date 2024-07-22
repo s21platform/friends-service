@@ -8,14 +8,14 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 
+RUN go build -o build/kafka cmd/workers/notification/main.go
 RUN go build -o build/main cmd/service/main.go
-#RUN go build -o build/kafka cmd/workers/notification/main.go TODO:понять почему тут ошибка
 
 FROM alpine:latest
 
 WORKDIR /app
 
 COPY --from=builder /usr/src/service/build/main .
-#COPY --from=builder /usr/src/service/build/kafka . TODO: поправить тут тоже
+COPY --from=builder /usr/src/service/build/kafka .
 
 CMD ["/app/main","/app/kafka"]

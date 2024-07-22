@@ -11,20 +11,18 @@ type KafkaConsumer struct {
 	Consumer *kafka.Consumer
 }
 
-func New() (*KafkaConsumer, error) {
-	env := config.MustLoad()
-
-	cfg := &kafka.ConfigMap{
-		"bootstrap.servers": env.Kafka.Server,
-		"group.id":          env.Kafka.GroupId,
+func New(cfg *config.Config) (*KafkaConsumer, error) {
+	cfgMap := &kafka.ConfigMap{
+		"bootstrap.servers": cfg.Kafka.Server,
+		"group.id":          cfg.Kafka.GroupId,
 	}
 
-	consumer, err := kafka.NewConsumer(cfg)
+	consumer, err := kafka.NewConsumer(cfgMap)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Kafka consumer: %w", err)
 	}
 
-	err = consumer.SubscribeTopics([]string{env.Kafka.TopicForReading}, nil)
+	err = consumer.SubscribeTopics([]string{cfg.Kafka.TopicForReading}, nil)
 	if err != nil {
 		fmt.Printf("Error subscribing: %s\n", err)
 	}
