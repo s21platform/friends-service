@@ -1,0 +1,4 @@
+.idea
+service.env
+docker-compose.yaml
+database
