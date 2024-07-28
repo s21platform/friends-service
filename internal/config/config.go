@@ -17,11 +17,11 @@ type Friends struct {
 }
 
 type ReadEnvBD struct {
-	User     string `env:"POSTGRES_USER"`
-	Password string `env:"POSTGRES_PASSWORD"`
-	Database string `env:"POSTGRES_DB"`
-	Host     string `env:"POSTGRES_HOST"`
-	Port     string `env:"POSTGRES_PORT"`
+	User     string `env:"FRIENDS_SERVICE_POSTGRES_USER"`
+	Password string `env:"FRIENDS_SERVICE_POSTGRES_PASSWORD"`
+	Database string `env:"FRIENDS_SERVICE_POSTGRES_DB"`
+	Host     string `env:"FRIENDS_SERVICE_POSTGRES_HOST"`
+	Port     string `env:"FRIENDS_SERVICE_POSTGRES_PORT"`
 }
 
 func MustLoad() *Config {
