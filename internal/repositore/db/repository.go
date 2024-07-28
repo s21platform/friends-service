@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 	"github.com/s21platform/friends-service/internal/config"
@@ -47,4 +48,24 @@ func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 	}
 	defer row.Close()
 	return false, err
+}
+
+func (r *Repository) MigrateDB() error {
+	driver, err := postgres.WithInstance(db.Connection, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("file://scripts/migrations",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//Применение миграций
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		fmt.Println("three")
+		panic(err)
+	}
+	return nil
 }
