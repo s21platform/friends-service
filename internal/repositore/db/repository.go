@@ -66,8 +66,7 @@ func (r *Repository) MigrateDB() error {
 
 	//Применение миграций
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		fmt.Println("three")
-		panic(err)
+		log.Fatal(err)
 	}
 	return nil
 }
