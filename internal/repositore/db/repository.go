@@ -3,10 +3,10 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/lib/pq"
 	"github.com/s21platform/friends-service/internal/config"
+	"log"
 )
 
 type Repository struct {
