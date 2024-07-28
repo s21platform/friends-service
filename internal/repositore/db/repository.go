@@ -22,12 +22,13 @@ func New(cfg *config.Config) (*Repository, error) {
 
 	db, err := sql.Open("postgres", conStr)
 	if err != nil {
-		fmt.Println("error connect: ", err)
+		log.Println("error connect: ", err)
 		return nil, err
 	}
 
 	//Сhecking connection db
 	if err := db.Ping(); err != nil {
+		log.Println("error ping: ", err)
 		return nil, err
 	}
 	return &Repository{db}, nil
