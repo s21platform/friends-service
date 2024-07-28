@@ -15,4 +15,5 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /usr/src/service/build/main .
+COPY scripts .
 CMD ["/app/main"]

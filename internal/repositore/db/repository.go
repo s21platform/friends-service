@@ -9,7 +9,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/s21platform/friends-service/internal/config"
 	"log"
-	"path/filepath"
 )
 
 type Repository struct {
@@ -60,14 +59,9 @@ func (r *Repository) MigrateDB() error {
 		log.Fatal("error getting driver", err)
 	}
 
-	migrationsPath, err := filepath.Abs("../../scripts/migrations")
+	m, err := migrate.NewWithDatabaseInstance("file://scripts/migrations", "postgres", driver)
 	if err != nil {
-		log.Fatal("error getting absolute path", err)
-	}
-
-	m, err := migrate.NewWithDatabaseInstance("file://"+migrationsPath, "postgres", driver)
-	if err != nil {
-		log.Fatal("error getting migrate object", err, migrationsPath)
+		log.Fatal("error getting migrate object", err)
 	}
 
 	//Применение миграций
