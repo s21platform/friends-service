@@ -67,7 +67,7 @@ func (r *Repository) MigrateDB() error {
 
 	m, err := migrate.NewWithDatabaseInstance("file://"+migrationsPath, "postgres", driver)
 	if err != nil {
-		log.Fatal("error getting migrate object", err)
+		log.Fatal("error getting migrate object", err, migrationsPath)
 	}
 
 	//Применение миграций
