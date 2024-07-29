@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer Data.Connection.Close()
+	defer Data.Close()
 
 	// добавление grpc сервера
 
