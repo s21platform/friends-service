@@ -3,10 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 	"github.com/s21platform/friends-service/internal/config"
+	"log"
 )
 
 type Repository struct {
@@ -49,4 +51,22 @@ func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 	}
 	defer row.Close()
 	return false, err
+}
+
+func (r *Repository) MigrateDB() error {
+	driver, err := postgres.WithInstance(r.Connection, &postgres.Config{})
+	if err != nil {
+		log.Fatal("error getting driver", err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("file://scripts/migrations", "postgres", driver)
+	if err != nil {
+		log.Fatal("error getting migrate object", err)
+	}
+
+	//Применение миграций
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("error migration process", err)
+	}
+	return nil
 }
