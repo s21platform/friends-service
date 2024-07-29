@@ -58,7 +58,7 @@ func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) MigrateDB() error {
-	driver, err := postgres.WithInstance(r.Connection, &postgres.Config{})
+	driver, err := postgres.WithInstance(r.сonnection, &postgres.Config{})
 	if err != nil {
 		log.Fatal("error getting driver", err)
 	}
