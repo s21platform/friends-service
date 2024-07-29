@@ -15,4 +15,5 @@ FROM ubuntu:latest
 WORKDIR /app
 
 COPY --from=builder /usr/src/service/build/main .
+COPY --from=builder /usr/src/service/scripts ./scripts
 CMD ["/app/main"]

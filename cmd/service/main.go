@@ -13,6 +13,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//миграции
+	err = Data.MigrateDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer Data.Close()
 
 	// добавление grpc сервера
