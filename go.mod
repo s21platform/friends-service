@@ -5,6 +5,7 @@ go 1.22.2
 toolchain go1.22.5
 
 require (
+	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lib/pq v1.10.9

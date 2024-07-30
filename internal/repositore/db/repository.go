@@ -12,7 +12,7 @@ import (
 )
 
 type Repository struct {
-	Connection *sql.DB
+	сonnection *sql.DB
 }
 
 func New(cfg *config.Config) (*Repository, error) {
@@ -34,8 +34,12 @@ func New(cfg *config.Config) (*Repository, error) {
 	return &Repository{db}, nil
 }
 
+func (r *Repository) Close() {
+	r.сonnection.Close()
+}
+
 func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
-	_, err := r.Connection.Exec("INSERT INTO friends (peer_1, peer_2) VALUES ($1, $2)", peer_1, peer_2)
+	_, err := r.сonnection.Exec("INSERT INTO friends (peer_1, peer_2) VALUES ($1, $2)", peer_1, peer_2)
 	if err != nil {
 		return false, err
 	}
@@ -43,7 +47,7 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
-	row, err := r.Connection.Query("SELECT peer_2 FROM friends WHERE $1 AND $2", peer_1, peer_2)
+	row, err := r.сonnection.Query("SELECT peer_2 FROM friends WHERE $1 AND $2", peer_1, peer_2)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return true, nil
@@ -54,7 +58,7 @@ func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) MigrateDB() error {
-	driver, err := postgres.WithInstance(r.Connection, &postgres.Config{})
+	driver, err := postgres.WithInstance(r.сonnection, &postgres.Config{})
 	if err != nil {
 		log.Fatal("error getting driver", err)
 	}

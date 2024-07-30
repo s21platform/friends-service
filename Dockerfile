@@ -1,5 +1,4 @@
-FROM golang:1.22-alpine as builder
-RUN apk update && apk add --no-cache make
+FROM golang:1.22 as builder
 
 WORKDIR /usr/src/service
 COPY go.mod .
@@ -10,7 +9,7 @@ COPY . .
 
 RUN go build -o build/main cmd/service/main.go
 
-FROM alpine:latest
+FROM ubuntu:latest
 
 WORKDIR /app
 
