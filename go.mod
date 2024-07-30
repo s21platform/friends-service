@@ -13,14 +13,7 @@ require (
 )
 
 require (
-	github.com/confluentinc/confluent-kafka-go v1.9.2
-	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/lib/pq v1.10.9
-)
-
-require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
