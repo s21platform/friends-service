@@ -1,0 +1,2 @@
+ALTER TABLE user_invite
+ALTER COLUMN update_time SET DEFAULT NOW();
