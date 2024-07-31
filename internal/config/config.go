@@ -33,14 +33,6 @@ type Kafka struct {
 	AutoOffset      string `env:"KAFKA_OFFSET" envDefault:"latest"`
 }
 
-type Kafka struct {
-	TopicForReading string `env:"FRIENDS_SERVICE_NOTIFICATION_KAFKA_TOPIC"`
-	TopicForWriting string `env:"NOTIFICATION_SERVICE_FRIENDS_TOPIC"`
-	Server          string `env:"KAFKA_SERVER" envDefault:"localhost:9092"`
-	GroupId         string `env:"KAFKA_GROUP_ID" envDefault:"test"`
-	AutoOffset      string `env:"KAFKA_OFFSET" envDefault:"latest"`
-}
-
 func MustLoad() *Config {
 	cfg := &Config{}
 	err := cleanenv.ReadEnv(cfg)

@@ -2,21 +2,21 @@ package main
 
 import (
 	"fmt"
-	"github.com/s21platform/friends-service/internal/broker"
 	"github.com/s21platform/friends-service/internal/config"
+	"github.com/s21platform/friends-service/internal/repositore/Kafka/consumer"
 	"time"
 )
 
 func main() {
 	env := config.MustLoad()
-	consumer, err := broker.New(env)
+	cons, err := consumer.New(env)
 	if err != nil {
 		fmt.Printf("Error creating consumer: %s\n", err)
 	}
-	defer consumer.Consumer.Close()
+	defer cons.Consumer.Close()
 
 	//тут должно вернуться сообщение, которое мы отправим в другой топик
-	_, err = consumer.ReadMessage(100 * time.Millisecond)
+	_, err = cons.ReadMessage(100 * time.Millisecond)
 	if err != nil {
 		fmt.Printf("Error reading message: %s\n", err)
 	}
