@@ -15,9 +15,10 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /usr/src/service/build/main .
+COPY --from=builder /usr/src/service/scripts ./scripts
 #COPY --from=builder /usr/src/service/build/kafka . todo:fix
 
-CMD ["/app/main","/app/kafka"]
+#CMD ["/app/main","/app/kafka"]
 
-COPY --from=builder /usr/src/service/scripts ./scripts
+
 CMD ["/app/main"]

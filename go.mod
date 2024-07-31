@@ -8,7 +8,6 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lib/pq v1.10.9
 	github.com/s21platform/friends-proto v0.0.0-20240714114344-1755f3433a9e
-	github.com/s21platform/friends-service v0.0.0-20240730142102-949b07a8ed61
 )
 
 require (
