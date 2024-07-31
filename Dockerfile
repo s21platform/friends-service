@@ -10,7 +10,7 @@ COPY . .
 #RUN go build -o build/kafka cmd/workers/notification/main.go todo: fix
 RUN go build -o build/main cmd/service/main.go
 
-FROM alpina:latest
+FROM alpine:latest
 
 WORKDIR /app
 
