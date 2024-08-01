@@ -9,29 +9,42 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/s21platform/friends-service/internal/config"
 	"log"
+	"time"
 )
 
 type Repository struct {
 	сonnection *sql.DB
 }
 
-func New(cfg *config.Config) (*Repository, error) {
+func connect(cfg *config.Config) (*Repository, error) {
 	//Connect db
 	conStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
 		cfg.Postgres.User, cfg.Postgres.Password, cfg.Postgres.Database, cfg.Postgres.Host, cfg.Postgres.Port)
 
 	db, err := sql.Open("postgres", conStr)
 	if err != nil {
-		log.Println("error connect: ", err)
-		return nil, err
+		return nil, fmt.Errorf("sql.Open: %w", err)
 	}
 
 	//Сhecking connection db
 	if err := db.Ping(); err != nil {
-		log.Println("error ping: ", err)
-		return nil, err
+		return nil, fmt.Errorf("db.Ping: %w", err)
 	}
 	return &Repository{db}, nil
+}
+
+func New(cfg *config.Config) (*Repository, error) {
+	var err error
+	var repo *Repository
+	for i := 0; i < 5; i++ {
+		repo, err = connect(cfg)
+		if err == nil {
+			return repo, nil
+		}
+		log.Println(err)
+		time.Sleep(500 * time.Millisecond)
+	}
+	return nil, err
 }
 
 func (r *Repository) Close() {
@@ -39,7 +52,7 @@ func (r *Repository) Close() {
 }
 
 func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
-	_, err := r.сonnection.Exec("INSERT INTO friends (peer_1, peer_2) VALUES ($1, $2)", peer_1, peer_2)
+	_, err := r.сonnection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer_1, peer_2)
 	if err != nil {
 		return false, err
 	}
@@ -47,7 +60,7 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
-	row, err := r.сonnection.Query("SELECT peer_2 FROM friends WHERE $1 AND $2", peer_1, peer_2)
+	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE $1 AND $2", peer_1, peer_2)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return true, nil

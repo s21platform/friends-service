@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/s21platform/friends-service/internal/config"
 	db "github.com/s21platform/friends-service/internal/repositore/db"
 	"log"
@@ -11,12 +12,12 @@ func main() {
 	cfg := config.MustLoad()
 	Data, err := db.New(cfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("db.New: %w", err))
 	}
 	//миграции
 	err = Data.MigrateDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("Data.MigrateDB: %w", err))
 	}
 	defer Data.Close()
 
