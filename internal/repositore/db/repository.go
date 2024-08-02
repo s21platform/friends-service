@@ -52,7 +52,11 @@ func (r *Repository) Close() {
 }
 
 func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
-	_, err := r.сonnection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer_1, peer_2)
+	res, err := r.isRowFriendExist(peer_1, peer_2)
+	if err != nil || res == true {
+		return false, err
+	}
+	_, err = r.сonnection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer_1, peer_2)
 	if err != nil {
 		return false, err
 	}
@@ -60,14 +64,14 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
-	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE $1 AND $2", peer_1, peer_2)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return true, nil
+	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer_1, peer_2)
+	if err == nil {
+		if !row.Next() {
+			return false, nil
 		}
 	}
 	defer row.Close()
-	return false, err
+	return true, err
 }
 
 func (r *Repository) MigrateDB() error {
