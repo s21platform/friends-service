@@ -14,19 +14,19 @@ import (
 func main() {
 	//чтение конфига
 	cfg := config.MustLoad()
-	dataB, err := db.New(cfg)
+	dbRepo, err := db.New(cfg)
 	if err != nil {
 		log.Fatal(fmt.Errorf("db.New: %w", err))
 	}
 	//миграции
-	err = dataB.MigrateDB()
+	err = dbRepo.MigrateDB()
 	if err != nil {
 		log.Fatal(fmt.Errorf("Data.MigrateDB: %w", err))
 	}
-	defer dataB.Close()
+	defer dbRepo.Close()
 
 	// добавление grpc сервера
-	thisService := service.New(dataB)
+	thisService := service.New(dbRepo)
 
 	s := grpc.NewServer()
 	friend_proto.RegisterFriendsServiseServer(s, thisService)
