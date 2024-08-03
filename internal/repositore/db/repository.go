@@ -33,22 +33,22 @@ func connect(cfg *config.Config) (*Repository, error) {
 	return &Repository{db}, nil
 }
 
-func New(cfg *config.Config) (*Repository, error) {
-	var err error
-	var repo *Repository
-	for i := 0; i < 5; i++ {
-		repo, err = connect(cfg)
-		if err == nil {
-			return repo, nil
-		}
-		log.Println(err)
-		time.Sleep(500 * time.Millisecond)
+func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
+	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
+	if err != nil {
+		log.Fatalln("connection err: ", err)
+		return nil, err
 	}
-	return nil, err
-}
-
-func (r *Repository) Close() {
-	r.сonnection.Close()
+	defer row.Close()
+	var peers []string
+	for row.Next() {
+		var peer string
+		if err := row.Scan(&peer); err != nil {
+			log.Fatal("read peer err: ", err)
+		}
+		peers = append(peers, peer)
+	}
+	return peers, nil
 }
 
 func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
@@ -90,4 +90,22 @@ func (r *Repository) MigrateDB() error {
 		log.Fatal("error migration process", err)
 	}
 	return nil
+}
+
+func (r *Repository) Close() {
+	r.сonnection.Close()
+}
+
+func New(cfg *config.Config) (*Repository, error) {
+	var err error
+	var repo *Repository
+	for i := 0; i < 5; i++ {
+		repo, err = connect(cfg)
+		if err == nil {
+			return repo, nil
+		}
+		log.Println(err)
+		time.Sleep(500 * time.Millisecond)
+	}
+	return nil, err
 }
