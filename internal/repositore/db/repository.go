@@ -33,24 +33,6 @@ func connect(cfg *config.Config) (*Repository, error) {
 	return &Repository{db}, nil
 }
 
-func New(cfg *config.Config) (*Repository, error) {
-	var err error
-	var repo *Repository
-	for i := 0; i < 5; i++ {
-		repo, err = connect(cfg)
-		if err == nil {
-			return repo, nil
-		}
-		log.Println(err)
-		time.Sleep(500 * time.Millisecond)
-	}
-	return nil, err
-}
-
-func (r *Repository) Close() {
-	r.сonnection.Close()
-}
-
 func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
 	if err != nil {
@@ -108,4 +90,22 @@ func (r *Repository) MigrateDB() error {
 		log.Fatal("error migration process", err)
 	}
 	return nil
+}
+
+func (r *Repository) Close() {
+	r.сonnection.Close()
+}
+
+func New(cfg *config.Config) (*Repository, error) {
+	var err error
+	var repo *Repository
+	for i := 0; i < 5; i++ {
+		repo, err = connect(cfg)
+		if err == nil {
+			return repo, nil
+		}
+		log.Println(err)
+		time.Sleep(500 * time.Millisecond)
+	}
+	return nil, err
 }
