@@ -51,6 +51,24 @@ func (r *Repository) Close() {
 	r.сonnection.Close()
 }
 
+func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
+	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
+	if err != nil {
+		log.Fatalln("connection err: ", err)
+		return nil, err
+	}
+	defer row.Close()
+	var peers []string
+	for row.Next() {
+		var peer string
+		if err := row.Scan(&peer); err != nil {
+			log.Fatal("read peer err: ", err)
+		}
+		peers = append(peers, peer)
+	}
+	return peers, nil
+}
+
 func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 	res, err := r.isRowFriendExist(peer_1, peer_2)
 	if err != nil || res == true {

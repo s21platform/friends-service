@@ -21,3 +21,15 @@ func (s *Server) SetFriends(ctx context.Context, in *friend_proto.SetFriendsIn) 
 func New(repo DbRepo) *Server {
 	return &Server{dbR: repo}
 }
+
+func (s *Server) GetPeerFollow(ctx context.Context, in *friend_proto.GetPeerFollowIn) (*friend_proto.GetPeerFollowOut, error) {
+	peersUUID, err := s.dbR.GetPeerFollows(in.Uuid)
+	if err != nil {
+		return nil, err
+	}
+	var peers []*friend_proto.Peer
+	for _, uuid := range peersUUID {
+		peers = append(peers, &friend_proto.Peer{Uuid: uuid})
+	}
+	return &friend_proto.GetPeerFollowOut{Subscription: peers}, nil
+}

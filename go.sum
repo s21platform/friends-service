@@ -151,8 +151,8 @@ github.com/rogpeppe/go-internal v1.8.0 h1:FCbCCtXNOY3UtUuHUYaghJg4y7Fd14rXifAYUA
 github.com/rogpeppe/go-internal v1.8.0/go.mod h1:WmiCO8CzOY8rg0OYDC4/i/2WRWAB6poM+XZ2dLUbcbE=
 github.com/s21platform/friends-proto v0.0.0-20240714114344-1755f3433a9e h1:3U1rQXkee8kOKHKGf0wREHsnsH9UbsTR97/K88vhQi0=
 github.com/s21platform/friends-proto v0.0.0-20240714114344-1755f3433a9e/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
-github.com/s21platform/friends-service v0.0.0-20240730142102-949b07a8ed61 h1:5Vmp9zBjQfeo6jcDsgmsaRryJhf+ZVw6FTc7BAaNkzY=
-github.com/s21platform/friends-service v0.0.0-20240730142102-949b07a8ed61/go.mod h1:VcmzLZtdHOlws4Lk4PQ7yeRGpfEEo4CGCfjGAr6eFNs=
+github.com/s21platform/friends-proto v0.0.0-20240802160808-e9f14d0b9f01 h1:cgeKSU7bVMVxPc0bs9S9V4IErReyhKsuFqmQvyiB13o=
+github.com/s21platform/friends-proto v0.0.0-20240802160808-e9f14d0b9f01/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
 github.com/santhosh-tekuri/jsonschema/v5 v5.0.0/go.mod h1:FKdcjfQW6rpZSnxxUvEA5H/cDPdvJ/SZJQLWWXWGrZ0=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=

@@ -25,7 +25,7 @@ func main() {
 	}
 	defer dbRepo.Close()
 
-	// добавление grpc сервера
+	//добавление grpc сервера
 	thisService := service.New(dbRepo)
 
 	s := grpc.NewServer()
