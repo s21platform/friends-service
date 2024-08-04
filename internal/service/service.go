@@ -33,3 +33,15 @@ func (s *Server) GetPeerFollow(ctx context.Context, in *friend_proto.GetPeerFoll
 	}
 	return &friend_proto.GetPeerFollowOut{Subscription: peers}, nil
 }
+
+func (s *Server) GetWhoFollowPeer(ctx context.Context, in *friend_proto.GetWhoFollowPeerIn) (*friend_proto.GetWhoFollowPeerOut, error) {
+	peerUuid, err := s.dbR.GetWhoFollowsPeer(in.Uuid)
+	if err != nil {
+		return nil, err
+	}
+	var peers []*friend_proto.Peer
+	for _, uuid := range peerUuid {
+		peers = append(peers, &friend_proto.Peer{Uuid: uuid})
+	}
+	return &friend_proto.GetWhoFollowPeerOut{Subscribers: peers}, nil
+}
