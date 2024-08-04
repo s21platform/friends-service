@@ -36,7 +36,7 @@ func connect(cfg *config.Config) (*Repository, error) {
 func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
 	if err != nil {
-		log.Fatalln("connection err: ", err)
+		log.Println("connection err: ", err)
 		return nil, err
 	}
 	defer row.Close()
@@ -44,7 +44,7 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	for row.Next() {
 		var peer string
 		if err := row.Scan(&peer); err != nil {
-			log.Fatal("read peer err: ", err)
+			log.Println("read peer err: ", err)
 		}
 		peers = append(peers, peer)
 	}
