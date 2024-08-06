@@ -48,6 +48,21 @@ func (mr *MockDbRepoMockRecorder) GetPeerFollows(initiator interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPeerFollows", reflect.TypeOf((*MockDbRepo)(nil).GetPeerFollows), initiator)
 }
 
+// GetWhoFollowsPeer mocks base method.
+func (m *MockDbRepo) GetWhoFollowsPeer(initiator string) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWhoFollowsPeer", initiator)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWhoFollowsPeer indicates an expected call of GetWhoFollowsPeer.
+func (mr *MockDbRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDbRepo)(nil).GetWhoFollowsPeer), initiator)
+}
+
 // SetFriend mocks base method.
 func (m *MockDbRepo) SetFriend(peer_1, peer_2 string) (bool, error) {
 	m.ctrl.T.Helper()
