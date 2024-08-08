@@ -18,11 +18,6 @@ func main() {
 	if err != nil {
 		log.Fatal(fmt.Errorf("db.New: %w", err))
 	}
-	//миграции
-	err = dbRepo.MigrateDB()
-	if err != nil {
-		log.Fatal(fmt.Errorf("Data.MigrateDB: %w", err))
-	}
 	defer dbRepo.Close()
 
 	//добавление grpc сервера
