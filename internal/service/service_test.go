@@ -89,3 +89,48 @@ func TestServer_GetWhoFollowPeer(t *testing.T) {
 
 	})
 }
+
+func TestServer_SetFriends(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockDbRepo := NewMockDbRepo(ctrl)
+
+	t.Run("should_ok_with_UUID", func(t *testing.T) {
+		peer1 := uuid.Generate()
+		peer2 := uuid.Generate()
+
+		mockDbRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(true, nil)
+
+		s := New(mockDbRepo)
+		res, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		assert.NoError(t, err)
+		assert.Equal(t, res, &friends_proto.SetFriendsOut{Success: true})
+	})
+
+	t.Run("should_no_ok_with_UUID", func(t *testing.T) {
+		peer1 := uuid.Generate()
+		peer2 := uuid.Generate()
+
+		mockDbRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(false, nil)
+
+		s := New(mockDbRepo)
+		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		assert.NoError(t, err)
+	})
+
+	t.Run("should_repo_err", func(t *testing.T) {
+		peer1 := uuid.Generate()
+		peer2 := uuid.Generate()
+		repoErr := errors.New("test")
+
+		mockDbRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(false, repoErr)
+
+		s := New(mockDbRepo)
+		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		assert.Error(t, err, repoErr)
+	})
+}
