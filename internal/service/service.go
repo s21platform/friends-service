@@ -13,7 +13,7 @@ type Server struct {
 func (s *Server) SetFriends(ctx context.Context, in *friend_proto.SetFriendsIn) (*friend_proto.SetFriendsOut, error) {
 	res, err := s.dbR.SetFriend(in.Peer_1, in.Peer_2)
 	if err != nil || res == false {
-		return &friend_proto.SetFriendsOut{Success: false}, nil
+		return nil, err
 	}
 	return &friend_proto.SetFriendsOut{Success: true}, nil
 }
