@@ -4,7 +4,7 @@ import (
 	"fmt"
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
-	db "github.com/s21platform/friends-service/internal/repositore/db"
+	db "github.com/s21platform/friends-service/internal/repository/db"
 	"github.com/s21platform/friends-service/internal/service"
 	"google.golang.org/grpc"
 	"log"
@@ -24,13 +24,13 @@ func main() {
 	thisService := service.New(dbRepo)
 
 	s := grpc.NewServer()
-	friend_proto.RegisterFriendsServiseServer(s, thisService)
+	friend_proto.RegisterFriendsServiceServer(s, thisService)
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Friends.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
 	if err != nil {
-		log.Fatalf("Cannnot listen port: %s; Error: %s", cfg.Friends.Port, err)
+		log.Fatalf("Cannnot listen port: %s; Error: %s", cfg.Service.Port, err)
 	}
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("Cannnot start service: %s; Error: %s", cfg.Friends.Port, err)
+		log.Fatalf("Cannnot start service: %s; Error: %s", cfg.Service.Port, err)
 	}
 }

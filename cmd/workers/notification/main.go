@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/s21platform/friends-service/internal/config"
-	"github.com/s21platform/friends-service/internal/repositore/Kafka/consumer"
+	"github.com/s21platform/friends-service/internal/repository/Kafka/consumer"
 	"time"
 )
 
