@@ -26,11 +26,11 @@ func main() {
 	s := grpc.NewServer()
 	friend_proto.RegisterFriendsServiceServer(s, thisService)
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Friends.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
 	if err != nil {
-		log.Fatalf("Cannnot listen port: %s; Error: %s", cfg.Friends.Port, err)
+		log.Fatalf("Cannnot listen port: %s; Error: %s", cfg.Service.Port, err)
 	}
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("Cannnot start service: %s; Error: %s", cfg.Friends.Port, err)
+		log.Fatalf("Cannnot start service: %s; Error: %s", cfg.Service.Port, err)
 	}
 }

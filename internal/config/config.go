@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Friends  Service
+	Service  Service
 	Postgres ReadEnvBD
 	Kafka    Kafka
 }
