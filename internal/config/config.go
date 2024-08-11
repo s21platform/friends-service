@@ -7,12 +7,12 @@ import (
 )
 
 type Config struct {
-	Friends  Friends
+	Friends  Service
 	Postgres ReadEnvBD
 	Kafka    Kafka
 }
 
-type Friends struct {
+type Service struct {
 	Port string `env:"FRIENDS_SERVICE_PORT"`
 	Host string `env:"FRIENDS_SERVICE_HOST"`
 }
