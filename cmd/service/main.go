@@ -4,7 +4,7 @@ import (
 	"fmt"
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
-	db "github.com/s21platform/friends-service/internal/repositore/db"
+	db "github.com/s21platform/friends-service/internal/repository/db"
 	"github.com/s21platform/friends-service/internal/service"
 	"google.golang.org/grpc"
 	"log"
@@ -24,7 +24,7 @@ func main() {
 	thisService := service.New(dbRepo)
 
 	s := grpc.NewServer()
-	friend_proto.RegisterFriendsServiseServer(s, thisService)
+	friend_proto.RegisterFriendsServiceServer(s, thisService)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Friends.Port))
 	if err != nil {

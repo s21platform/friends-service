@@ -6,7 +6,7 @@ import (
 )
 
 type Server struct {
-	friend_proto.UnimplementedFriendsServiseServer
+	friend_proto.UnimplementedFriendsServiceServer
 	dbR DbRepo
 }
 
