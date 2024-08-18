@@ -10,11 +10,11 @@ COPY . .
 #RUN go build -o build/kafka cmd/workers/notification/main.go todo: fix
 RUN go build -o build/main cmd/service/main.go
 
-FROM alpine
+FROM ubuntu:22.04
 
 WORKDIR /app
 
-COPY --from=builder /usr/src/service/build/main /app
+COPY --from=builder /usr/src/service/build/main .
 # COPY --from=builder /usr/src/service/scripts ./scripts
 #COPY --from=builder /usr/src/service/build/kafka . todo:fix
 
