@@ -79,11 +79,49 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 	return true, nil
 }
 
+func (r *Repository) RemoveSubscribe(peer_1, peer_2 string) error {
+	friend, err := r.isRowFriendExist(peer_1, peer_2)
+	if err != nil {
+		return err
+	}
+	if !friend {
+		return fmt.Errorf("RemoveSubscribe not friend: %s %s", peer_1, peer_2)
+	}
+	_, err = r.сonnection.Exec("DELETE FROM friends WHERE initiator = $1 AND user_id = $2", peer_1, peer_2)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *Repository) InvitePeer(uuid, email string) error {
+	res, err := r.isRowInviteExist(uuid, email)
+	if err != nil {
+		return err
+	}
+	if res {
+		return fmt.Errorf("Invite exist: %s and %s", uuid, email) // можно сделать nil если это не ошибка
+	}
+	_, err = r.сonnection.Exec("INSERT INTO user_invite (initiator, invited, is_closed) VALUES ($1, $2, false)", uuid, email)
+	return err
+}
+
+func (r *Repository) isRowInviteExist(row1, row2 string) (bool, error) {
+	row, err := r.сonnection.Query("SELECT * FROM user_invite WHERE initiator = $1 AND invited = $2", row1, row2)
+	if err == nil {
+		if !row.Next() {
+			return false, err
+		}
+	}
+	defer row.Close()
+	return true, nil
+}
+
 func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer_1, peer_2)
 	if err == nil {
 		if !row.Next() {
-			return false, nil
+			return false, err
 		}
 	}
 	defer row.Close()
