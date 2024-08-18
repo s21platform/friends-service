@@ -134,3 +134,36 @@ func TestServer_SetFriends(t *testing.T) {
 		assert.Error(t, err, repoErr)
 	})
 }
+
+func TestServer_RemoveSubscribe(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockDbRepo := NewMockDbRepo(ctrl)
+
+	t.Run("should_ok_with_UUID", func(t *testing.T) {
+		peer1 := uuid.Generate()
+		peer2 := uuid.Generate()
+
+		mockDbRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(nil)
+		s := New(mockDbRepo)
+		res, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		assert.NoError(t, err)
+		assert.Equal(t, res, &friends_proto.RemoveSubscribeOut{})
+	})
+
+	t.Run("should_no_ok_with_UUID", func(t *testing.T) {
+		peer1 := uuid.Generate()
+		peer2 := uuid.Generate()
+		repoErr := errors.New("test")
+
+		mockDbRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(repoErr)
+
+		s := New(mockDbRepo)
+		_, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		assert.Error(t, err, repoErr)
+	})
+}

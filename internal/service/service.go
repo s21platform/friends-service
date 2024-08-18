@@ -18,6 +18,11 @@ func (s *Server) SetFriends(ctx context.Context, in *friend_proto.SetFriendsIn) 
 	return &friend_proto.SetFriendsOut{Success: true}, nil
 }
 
+func (s *Server) RemoveSubscribe(ctx context.Context, in *friend_proto.RemoveSubscribeIn) (*friend_proto.RemoveSubscribeOut, error) {
+	err := s.dbR.RemoveSubscribe(in.Peer_1, in.Peer_2)
+	return &friend_proto.RemoveSubscribeOut{}, err
+}
+
 func New(repo DbRepo) *Server {
 	return &Server{dbR: repo}
 }
@@ -44,4 +49,9 @@ func (s *Server) GetWhoFollowPeer(ctx context.Context, in *friend_proto.GetWhoFo
 		peers = append(peers, &friend_proto.Peer{Uuid: uuid})
 	}
 	return &friend_proto.GetWhoFollowPeerOut{Subscribers: peers}, nil
+}
+
+func (s *Server) InvitePeer(ctx context.Context, in *friend_proto.InvitePeerIn) (*friend_proto.InvitePeerOut, error) {
+	err := s.dbR.InvitePeer(in.Uuid, in.Email)
+	return &friend_proto.InvitePeerOut{}, err
 }
