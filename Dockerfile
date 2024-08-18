@@ -21,4 +21,4 @@ COPY --from=builder /usr/src/service/scripts ./scripts
 #CMD ["/app/main","/app/kafka"]
 
 
-CMD ["./app/main"]
+CMD ["/app/main"]
