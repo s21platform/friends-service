@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
-	"log"
 )
 
 type Server struct {
@@ -12,7 +11,6 @@ type Server struct {
 }
 
 func (s *Server) SetFriends(ctx context.Context, in *friend_proto.SetFriendsIn) (*friend_proto.SetFriendsOut, error) {
-	log.Println(in.Peer_1, in.Peer_2)
 	res, err := s.dbR.SetFriend(in.Peer_1, in.Peer_2)
 	if err != nil || res == false {
 		return nil, err
@@ -52,11 +50,6 @@ func (s *Server) GetWhoFollowPeer(ctx context.Context, in *friend_proto.GetWhoFo
 	}
 	return &friend_proto.GetWhoFollowPeerOut{Subscribers: peers}, nil
 }
-
-//func (s *Server) RemoveSubscribe(ctx context.Context, in *friend_proto.RemoveSubscribeIn) (*friend_proto.RemoveSubscribeOut, error) {
-//	err := s.dbR.RemoveSubscribe(in.Peer_1, in.Peer_2)
-//	return &friend_proto.RemoveSubscribeOut{}, err
-//}
 
 func (s *Server) InvitePeer(ctx context.Context, in *friend_proto.InvitePeerIn) (*friend_proto.InvitePeerOut, error) {
 	err := s.dbR.InvitePeer(in.Uuid, in.Email)
