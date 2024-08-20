@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	_ "net/http/pprof"
 )
 
 func main() {

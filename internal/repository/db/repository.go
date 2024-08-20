@@ -10,7 +10,7 @@ import (
 )
 
 type Repository struct {
-	сonnection *sql.DB
+	connection *sql.DB
 }
 
 func connect(cfg *config.Config) (*Repository, error) {
@@ -31,7 +31,7 @@ func connect(cfg *config.Config) (*Repository, error) {
 }
 
 func (r *Repository) GetWhoFollowsPeer(initiator string) ([]string, error) {
-	row, err := r.сonnection.Query("SELECT initiator FROM friends WHERE user_id = $1", initiator)
+	row, err := r.connection.Query("SELECT initiator FROM friends WHERE user_id = $1", initiator)
 	if err != nil {
 		log.Println("connection err: ", err)
 		return nil, err
@@ -50,7 +50,7 @@ func (r *Repository) GetWhoFollowsPeer(initiator string) ([]string, error) {
 }
 
 func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
-	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
+	row, err := r.connection.Query("SELECT user_id FROM friends WHERE initiator = $1", initiator)
 	if err != nil {
 		log.Println("connection err: ", err)
 		return nil, err
@@ -72,7 +72,7 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 	if err != nil || res == true {
 		return false, err
 	}
-	_, err = r.сonnection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer_1, peer_2)
+	_, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer_1, peer_2)
 	if err != nil {
 		return false, err
 	}
@@ -80,7 +80,7 @@ func (r *Repository) SetFriend(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
-	row, err := r.сonnection.Query("SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer_1, peer_2)
+	row, err := r.connection.Query("SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer_1, peer_2)
 	if err == nil {
 		if !row.Next() {
 			return false, nil
@@ -91,7 +91,7 @@ func (r *Repository) isRowFriendExist(peer_1, peer_2 string) (bool, error) {
 }
 
 func (r *Repository) Close() {
-	r.сonnection.Close()
+	r.connection.Close()
 }
 
 func New(cfg *config.Config) (*Repository, error) {
