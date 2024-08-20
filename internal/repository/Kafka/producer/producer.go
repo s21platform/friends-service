@@ -1,48 +1,40 @@
 package producer
 
 import (
+	"context"
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/s21platform/friends-service/internal/config"
+	"github.com/segmentio/kafka-go"
 )
 
 type KafkaProducer struct {
-	Producer *kafka.Producer
+	Producer *kafka.Writer
 	Topic    *config.Kafka
 }
 
 func New(cfg *config.Config) (*KafkaProducer, error) {
-	cfgMap := &kafka.ConfigMap{
-		"bootstrap.servers": cfg.Kafka.Server,
+	if cfg.Kafka.Server == "" {
+		return nil, fmt.Errorf("Kafka server address is not provided")
 	}
-
-	producer, err := kafka.NewProducer(cfgMap)
-	if err != nil {
-		return nil, err
+	if cfg.Kafka.TopicForWriting == "" {
+		return nil, fmt.Errorf("Kafka topic is not provided")
 	}
-	return &KafkaProducer{
-		Producer: producer,
-	}, nil
+	writer := &kafka.Writer{
+		Addr:         kafka.TCP(cfg.Kafka.Server),
+		Topic:        cfg.Kafka.TopicForWriting,
+		Balancer:     &kafka.LeastBytes{}, // балансировщик, на данный момент равномерно распределяет сообщения по партициям
+		RequiredAcks: kafka.RequireAll,    // подтверждение о том что сообщение доставлено
+	}
+	return &KafkaProducer{Producer: writer, Topic: &cfg.Kafka}, nil
 }
 
-func (kp *KafkaProducer) SendMassage(msg string) error {
-	sendChan := make(chan kafka.Event)
-	err := kp.Producer.Produce(&kafka.Message{TopicPartition: kafka.TopicPartition{
-		Topic: &kp.Topic.TopicForWriting, Partition: kafka.PartitionAny,
-	}, Value: []byte(msg)}, sendChan)
-	if err != nil {
-		return err
-	}
+func (kp *KafkaProducer) Close() error {
+	return kp.Producer.Close()
+}
 
-	for e := range kp.Producer.Events() {
-		switch ev := e.(type) {
-		case *kafka.Message:
-			if ev.TopicPartition.Error != nil {
-				return fmt.Errorf("%v", ev.TopicPartition.Error)
-			} else {
-				return nil
-			}
-		}
-	}
-	return nil
+func (kp *KafkaProducer) SendMessage(ctx context.Context, value []byte) error {
+	err := kp.Producer.WriteMessages(ctx, kafka.Message{
+		Value: value,
+	})
+	return err
 }
