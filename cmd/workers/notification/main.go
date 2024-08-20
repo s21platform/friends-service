@@ -18,9 +18,9 @@ func main() {
 
 	defer prod.Close()
 
-	ctx, cansel := context.WithTimeout(context.Background(), 10*time.Microsecond)
+	ctx, canсel := context.WithTimeout(context.Background(), 10*time.Microsecond)
 
-	defer cansel()
+	defer canсel()
 
 	err = prod.SendMessage(ctx, []byte("Hello, test"))
 	if err != nil {
