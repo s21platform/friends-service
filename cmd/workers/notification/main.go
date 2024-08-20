@@ -24,6 +24,6 @@ func main() {
 
 	err = prod.SendMessage(ctx, []byte("Hello, test"))
 	if err != nil {
-		log.Println("Error sendMessage: %s", err)
+		log.Println("Error sendMessage: ", err)
 	}
 }
