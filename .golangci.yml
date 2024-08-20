@@ -1,0 +1,66 @@
+run:
+  tests: true
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - depguard
+    - dogsled
+    - errcheck
+    - exhaustive
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - revive
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nolintlint
+    - rowserrcheck
+    - exportloopref
+    - staticcheck
+    - unused
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+    - asciicheck
+    - gocognit
+    - godot
+    - nestif
+    - prealloc
+    - testpackage
+    - wsl
+    - gci
+linters-settings:
+  lll:
+    line-length: 200
+  funlen:
+    lines: 120
+    statements: 50
+  goimports:
+    local-prefixes: gitlab.tcsbank.ru/tcb/ice
+  gocritic:
+    enabled-tags:
+      - style
+      - experimental
+      - performance
+      - diagnostic
+      - opinionated
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(gitlab.tcsbank.ru/tcb)
+      - prefix(gitlab.tcsbank.ru/tcb/ice)

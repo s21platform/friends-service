@@ -6,6 +6,27 @@ on:
 
 
 jobs:
+  linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+    env:
+      GO_PATHS_CMD: cmd/service cmd/workers
+      GO_PATHS_INTERNAL: internal/config internal/repository/db internal/repository/Kafka/consumer internal/repository/Kafka/producer internal/service
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+      - name: Run golangci-lint
+        run: golangci-lint run --config=.golangci.yml ${{ env.GO_PATHS_CMD }} ${{ env.GO_PATHS_INTERNAL }}
   test:
     name: Run tests
     runs-on: ubuntu-latest
