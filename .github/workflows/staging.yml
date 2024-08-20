@@ -27,9 +27,11 @@ jobs:
 
       - name: Run golangci-lint
         run: golangci-lint run --config=.golangci.yml ${{ env.GO_PATHS_CMD }} ${{ env.GO_PATHS_INTERNAL }}
+
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    needs: linters
 
     steps:
       - name: Checkout code
