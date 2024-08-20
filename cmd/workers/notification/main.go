@@ -13,7 +13,7 @@ func main() {
 
 	prod, err := producer.New(env)
 	if err != nil {
-		log.Println("Error create produser: %s", err)
+		log.Println("Error create produser: ", err)
 	}
 
 	defer prod.Close()
