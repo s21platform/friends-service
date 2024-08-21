@@ -8,7 +8,7 @@ import (
 
 type Server struct {
 	friend_proto.UnimplementedFriendsServiceServer
-	dbR DbRepo
+	dbR DBRepo
 }
 
 func (s *Server) SetFriends(
@@ -33,7 +33,7 @@ func (s *Server) RemoveSubscribe(
 	return &friend_proto.RemoveSubscribeOut{}, err
 }
 
-func New(repo DbRepo) *Server {
+func New(repo DBRepo) *Server {
 	return &Server{dbR: repo}
 }
 
@@ -42,6 +42,7 @@ func (s *Server) GetPeerFollow(
 ) (*friend_proto.GetPeerFollowOut, error) {
 	_ = ctx
 	peersUUID, err := s.dbR.GetPeerFollows(in.Uuid)
+
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +61,7 @@ func (s *Server) GetWhoFollowPeer(
 ) (*friend_proto.GetWhoFollowPeerOut, error) {
 	_ = ctx
 	peerUUID, err := s.dbR.GetWhoFollowsPeer(in.Uuid)
+
 	if err != nil {
 		return nil, err
 	}

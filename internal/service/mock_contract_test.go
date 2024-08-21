@@ -2,7 +2,7 @@
 // Source: contract.go
 
 // Package service is a generated GoMock package.
-package service
+package service_test
 
 import (
 	reflect "reflect"
