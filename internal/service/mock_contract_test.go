@@ -2,7 +2,7 @@
 // Source: contract.go
 
 // Package service is a generated GoMock package.
-package service
+package service_test
 
 import (
 	reflect "reflect"
@@ -10,31 +10,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockDbRepo is a mock of DbRepo interface.
-type MockDbRepo struct {
+// MockDBRepo is a mock of DBRepo interface.
+type MockDBRepo struct {
 	ctrl     *gomock.Controller
-	recorder *MockDbRepoMockRecorder
+	recorder *MockDBRepoMockRecorder
 }
 
-// MockDbRepoMockRecorder is the mock recorder for MockDbRepo.
-type MockDbRepoMockRecorder struct {
-	mock *MockDbRepo
+// MockDBRepoMockRecorder is the mock recorder for MockDBRepo.
+type MockDBRepoMockRecorder struct {
+	mock *MockDBRepo
 }
 
-// NewMockDbRepo creates a new mock instance.
-func NewMockDbRepo(ctrl *gomock.Controller) *MockDbRepo {
-	mock := &MockDbRepo{ctrl: ctrl}
-	mock.recorder = &MockDbRepoMockRecorder{mock}
+// NewMockDBRepo creates a new mock instance.
+func NewMockDBRepo(ctrl *gomock.Controller) *MockDBRepo {
+	mock := &MockDBRepo{ctrl: ctrl}
+	mock.recorder = &MockDBRepoMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDbRepo) EXPECT() *MockDbRepoMockRecorder {
+func (m *MockDBRepo) EXPECT() *MockDBRepoMockRecorder {
 	return m.recorder
 }
 
 // GetPeerFollows mocks base method.
-func (m *MockDbRepo) GetPeerFollows(initiator string) ([]string, error) {
+func (m *MockDBRepo) GetPeerFollows(initiator string) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPeerFollows", initiator)
 	ret0, _ := ret[0].([]string)
@@ -43,13 +43,13 @@ func (m *MockDbRepo) GetPeerFollows(initiator string) ([]string, error) {
 }
 
 // GetPeerFollows indicates an expected call of GetPeerFollows.
-func (mr *MockDbRepoMockRecorder) GetPeerFollows(initiator interface{}) *gomock.Call {
+func (mr *MockDBRepoMockRecorder) GetPeerFollows(initiator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPeerFollows", reflect.TypeOf((*MockDbRepo)(nil).GetPeerFollows), initiator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPeerFollows", reflect.TypeOf((*MockDBRepo)(nil).GetPeerFollows), initiator)
 }
 
 // GetWhoFollowsPeer mocks base method.
-func (m *MockDbRepo) GetWhoFollowsPeer(initiator string) ([]string, error) {
+func (m *MockDBRepo) GetWhoFollowsPeer(initiator string) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWhoFollowsPeer", initiator)
 	ret0, _ := ret[0].([]string)
@@ -58,13 +58,13 @@ func (m *MockDbRepo) GetWhoFollowsPeer(initiator string) ([]string, error) {
 }
 
 // GetWhoFollowsPeer indicates an expected call of GetWhoFollowsPeer.
-func (mr *MockDbRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomock.Call {
+func (mr *MockDBRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDbRepo)(nil).GetWhoFollowsPeer), initiator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDBRepo)(nil).GetWhoFollowsPeer), initiator)
 }
 
 // InvitePeer mocks base method.
-func (m *MockDbRepo) InvitePeer(initiator, email string) error {
+func (m *MockDBRepo) InvitePeer(initiator, email string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "InvitePeer", initiator, email)
 	ret0, _ := ret[0].(error)
@@ -72,36 +72,36 @@ func (m *MockDbRepo) InvitePeer(initiator, email string) error {
 }
 
 // InvitePeer indicates an expected call of InvitePeer.
-func (mr *MockDbRepoMockRecorder) InvitePeer(initiator, email interface{}) *gomock.Call {
+func (mr *MockDBRepoMockRecorder) InvitePeer(initiator, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvitePeer", reflect.TypeOf((*MockDbRepo)(nil).InvitePeer), initiator, email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvitePeer", reflect.TypeOf((*MockDBRepo)(nil).InvitePeer), initiator, email)
 }
 
 // RemoveSubscribe mocks base method.
-func (m *MockDbRepo) RemoveSubscribe(peer_1, peer_2 string) error {
+func (m *MockDBRepo) RemoveSubscribe(peer1, peer2 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveSubscribe", peer_1, peer_2)
+	ret := m.ctrl.Call(m, "RemoveSubscribe", peer1, peer2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RemoveSubscribe indicates an expected call of RemoveSubscribe.
-func (mr *MockDbRepoMockRecorder) RemoveSubscribe(peer_1, peer_2 interface{}) *gomock.Call {
+func (mr *MockDBRepoMockRecorder) RemoveSubscribe(peer1, peer2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSubscribe", reflect.TypeOf((*MockDbRepo)(nil).RemoveSubscribe), peer_1, peer_2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSubscribe", reflect.TypeOf((*MockDBRepo)(nil).RemoveSubscribe), peer1, peer2)
 }
 
 // SetFriend mocks base method.
-func (m *MockDbRepo) SetFriend(peer_1, peer_2 string) (bool, error) {
+func (m *MockDBRepo) SetFriend(peer1, peer2 string) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetFriend", peer_1, peer_2)
+	ret := m.ctrl.Call(m, "SetFriend", peer1, peer2)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SetFriend indicates an expected call of SetFriend.
-func (mr *MockDbRepoMockRecorder) SetFriend(peer_1, peer_2 interface{}) *gomock.Call {
+func (mr *MockDBRepoMockRecorder) SetFriend(peer1, peer2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFriend", reflect.TypeOf((*MockDbRepo)(nil).SetFriend), peer_1, peer_2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFriend", reflect.TypeOf((*MockDBRepo)(nil).SetFriend), peer1, peer2)
 }
