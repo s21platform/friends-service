@@ -2,3 +2,4 @@
 docker-compose.yml
 service.env
 .DS_Store
+linters.sh

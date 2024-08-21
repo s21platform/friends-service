@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 	"errors"
+	"testing"
+
 	"github.com/docker/distribution/uuid"
 	"github.com/golang/mock/gomock"
-	"github.com/s21platform/friends-proto/friends-proto"
+	friends_proto "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestServer_GetPeerFollow(t *testing.T) {
@@ -17,7 +18,7 @@ func TestServer_GetPeerFollow(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockDbRepo := NewMockDbRepo(ctrl)
+	mockDBRepo := NewMockDBRepo(ctrl)
 
 	t.Run("should_ok_with_UUID", func(t *testing.T) {
 		userUUID := uuid.Generate()
@@ -25,28 +26,26 @@ func TestServer_GetPeerFollow(t *testing.T) {
 			uuid.Generate().String(),
 			uuid.Generate().String(),
 		}
-		mockDbRepo.EXPECT().GetPeerFollows(userUUID.String()).Return(followersUUID, nil)
+		mockDBRepo.EXPECT().GetPeerFollows(userUUID.String()).Return(followersUUID, nil)
 
-		s := New(mockDbRepo)
+		s := New(mockDBRepo)
 		res, err := s.GetPeerFollow(ctx, &friends_proto.GetPeerFollowIn{Uuid: userUUID.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.GetPeerFollowOut{Subscription: []*friends_proto.Peer{
-			&friends_proto.Peer{Uuid: followersUUID[0]},
-			&friends_proto.Peer{Uuid: followersUUID[1]},
+			{Uuid: followersUUID[0]},
+			{Uuid: followersUUID[1]},
 		}})
-
 	})
 
 	t.Run("should_repo_err", func(t *testing.T) {
 		userUUID := uuid.Generate()
 		repoErr := errors.New("test")
 
-		mockDbRepo.EXPECT().GetPeerFollows(userUUID.String()).Return(nil, repoErr)
+		mockDBRepo.EXPECT().GetPeerFollows(userUUID.String()).Return(nil, repoErr)
 
-		s := New(mockDbRepo)
+		s := New(mockDBRepo)
 		_, err := s.GetPeerFollow(ctx, &friends_proto.GetPeerFollowIn{Uuid: userUUID.String()})
 		assert.Error(t, err, repoErr)
-
 	})
 }
 
@@ -57,7 +56,7 @@ func TestServer_GetWhoFollowPeer(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockDbRepo := NewMockDbRepo(ctrl)
+	mockDbRepo := NewMockDBRepo(ctrl)
 
 	t.Run("should_ok_with_UUID", func(t *testing.T) {
 		userUUID := uuid.Generate()
@@ -71,10 +70,9 @@ func TestServer_GetWhoFollowPeer(t *testing.T) {
 		res, err := s.GetWhoFollowPeer(ctx, &friends_proto.GetWhoFollowPeerIn{Uuid: userUUID.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.GetWhoFollowPeerOut{Subscribers: []*friends_proto.Peer{
-			&friends_proto.Peer{Uuid: followersUUID[0]},
-			&friends_proto.Peer{Uuid: followersUUID[1]},
+			{Uuid: followersUUID[0]},
+			{Uuid: followersUUID[1]},
 		}})
-
 	})
 
 	t.Run("should_repo_err", func(t *testing.T) {
@@ -86,7 +84,6 @@ func TestServer_GetWhoFollowPeer(t *testing.T) {
 		s := New(mockDbRepo)
 		_, err := s.GetWhoFollowPeer(ctx, &friends_proto.GetWhoFollowPeerIn{Uuid: userUUID.String()})
 		assert.Error(t, err, repoErr)
-
 	})
 }
 
@@ -97,7 +94,7 @@ func TestServer_SetFriends(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockDbRepo := NewMockDbRepo(ctrl)
+	mockDbRepo := NewMockDBRepo(ctrl)
 
 	t.Run("should_ok_with_UUID", func(t *testing.T) {
 		peer1 := uuid.Generate()
@@ -142,14 +139,14 @@ func TestServer_RemoveSubscribe(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockDbRepo := NewMockDbRepo(ctrl)
+	mockDBRepo := NewMockDBRepo(ctrl)
 
 	t.Run("should_ok_with_UUID", func(t *testing.T) {
 		peer1 := uuid.Generate()
 		peer2 := uuid.Generate()
 
-		mockDbRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(nil)
-		s := New(mockDbRepo)
+		mockDBRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(nil)
+		s := New(mockDBRepo)
 		res, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.RemoveSubscribeOut{})
@@ -160,9 +157,9 @@ func TestServer_RemoveSubscribe(t *testing.T) {
 		peer2 := uuid.Generate()
 		repoErr := errors.New("test")
 
-		mockDbRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(repoErr)
+		mockDBRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(repoErr)
 
-		s := New(mockDbRepo)
+		s := New(mockDBRepo)
 		_, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
 		assert.Error(t, err, repoErr)
 	})

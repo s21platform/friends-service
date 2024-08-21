@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/s21platform/friends-service/internal/config"
-	"github.com/s21platform/friends-service/internal/repository/Kafka/producer"
 	"log"
 	"time"
+
+	"github.com/s21platform/friends-service/internal/config"
+	"github.com/s21platform/friends-service/internal/repository/Kafka/producer"
 )
 
 func main() {
@@ -18,9 +19,9 @@ func main() {
 
 	defer prod.Close()
 
-	ctx, canсel := context.WithTimeout(context.Background(), 10*time.Microsecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Microsecond)
 
-	defer canсel()
+	defer cancel()
 
 	err = prod.SendMessage(ctx, []byte("Hello, test"))
 	if err != nil {
