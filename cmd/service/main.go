@@ -6,6 +6,8 @@ import (
 	"net"
 	"os"
 
+	"github.com/s21platform/friends-service/internal/rpc/user"
+
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
 	db "github.com/s21platform/friends-service/internal/repository/db"
@@ -38,5 +40,11 @@ func main() {
 
 	if err := s.Serve(lis); err != nil {
 		log.Printf("Cannot start service: %s; Error: %s", cfg.Service.Port, err)
+	}
+
+	// слушаем сервис User
+	_, err = user.New(cfg)
+	if err != nil {
+		log.Printf("Cannot connect User service: %s", err)
 	}
 }
