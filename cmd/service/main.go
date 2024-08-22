@@ -38,13 +38,13 @@ func main() {
 		log.Printf("Cannot listen port: %s; Error: %s", cfg.Service.Port, err)
 	}
 
-	if err := s.Serve(lis); err != nil {
-		log.Printf("Cannot start service: %s; Error: %s", cfg.Service.Port, err)
-	}
-
 	// слушаем сервис User
 	_, err = user.New(cfg)
 	if err != nil {
 		log.Printf("Cannot connect User service: %s", err)
+	}
+
+	if err = s.Serve(lis); err != nil {
+		log.Printf("Cannot start service: %s; Error: %s", cfg.Service.Port, err)
 	}
 }
