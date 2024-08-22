@@ -10,6 +10,7 @@ type Config struct {
 	Service  Service
 	Postgres ReadEnvBD
 	Kafka    Kafka
+	User     User
 }
 
 type Service struct {
@@ -31,6 +32,11 @@ type Kafka struct {
 	Server          string `env:"KAFKA_SERVER" envDefault:"localhost:9092"`
 	GroupID         string `env:"KAFKA_GROUP_ID" envDefault:"test"`
 	AutoOffset      string `env:"KAFKA_OFFSET" envDefault:"latest"`
+}
+
+type User struct {
+	Host string `env:"USER_SERVICE_HOST"`
+	Port string `env:"USER_SERVICE_PORT"`
 }
 
 func MustLoad() *Config {

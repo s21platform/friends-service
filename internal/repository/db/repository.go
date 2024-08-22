@@ -25,7 +25,7 @@ func connect(cfg *config.Config) (*Repository, error) {
 	}
 
 	// Сhecking connection db
-	if err := db.Ping(); err != nil {
+	if err = db.Ping(); err != nil {
 		return nil, fmt.Errorf("db.Ping: %w", err)
 	}
 
