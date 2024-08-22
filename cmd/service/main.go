@@ -38,7 +38,6 @@ func main() {
 		log.Printf("Cannot listen port: %s; Error: %s", cfg.Service.Port, err)
 	}
 
-	// слушаем сервис User
 	_, err = user.New(cfg)
 	if err != nil {
 		log.Printf("Cannot connect User service: %s", err)

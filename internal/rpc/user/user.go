@@ -17,16 +17,6 @@ type Handle struct {
 	client user_proto.UserServiceClient
 }
 
-func (h *Handle) GetUserByLogin(ctx context.Context, email string) (string, bool, error) {
-	userUUID, err := h.client.GetUserByLogin(ctx, &user_proto.GetUserByLoginIn{Login: email})
-
-	if err != nil {
-		return "", false, fmt.Errorf("error client.GetUserByLogin: %w", err)
-	}
-
-	return userUUID.Uuid, userUUID.IsNewUser, nil
-}
-
 func (h *Handle) IsUserExistByUUID(ctx context.Context, userUUID string) (bool, error) {
 	res, err := h.client.IsUserExistByUUID(ctx, &user_proto.IsUserExistByUUIDIn{Uuid: userUUID})
 
