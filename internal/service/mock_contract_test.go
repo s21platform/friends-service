@@ -33,6 +33,20 @@ func (m *MockDBRepo) EXPECT() *MockDBRepoMockRecorder {
 	return m.recorder
 }
 
+// GetInvitePeer mocks base method.
+func (m *MockDBRepo) GetInvitePeer(initiator, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetInvitePeer", initiator, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetInvitePeer indicates an expected call of GetInvitePeer.
+func (mr *MockDBRepoMockRecorder) GetInvitePeer(initiator, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInvitePeer", reflect.TypeOf((*MockDBRepo)(nil).GetInvitePeer), initiator, email)
+}
+
 // GetPeerFollows mocks base method.
 func (m *MockDBRepo) GetPeerFollows(initiator string) ([]string, error) {
 	m.ctrl.T.Helper()
@@ -61,20 +75,6 @@ func (m *MockDBRepo) GetWhoFollowsPeer(initiator string) ([]string, error) {
 func (mr *MockDBRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDBRepo)(nil).GetWhoFollowsPeer), initiator)
-}
-
-// InvitePeer mocks base method.
-func (m *MockDBRepo) InvitePeer(initiator, email string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InvitePeer", initiator, email)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// InvitePeer indicates an expected call of InvitePeer.
-func (mr *MockDBRepoMockRecorder) InvitePeer(initiator, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvitePeer", reflect.TypeOf((*MockDBRepo)(nil).InvitePeer), initiator, email)
 }
 
 // RemoveSubscribe mocks base method.
