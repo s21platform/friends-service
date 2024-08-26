@@ -185,9 +185,9 @@ func TestServer_InvitePeer(t *testing.T) {
 		peerUUID := uuid.Generate()
 		email := "test@test.ru"
 
-		mockDBRepo.EXPECT().InvitePeer(peerUUID.String(), email).Return(nil)
+		mockDBRepo.EXPECT().GetInvitePeer(peerUUID.String(), email).Return(nil)
 		s := service.New(mockDBRepo)
-		_, err := s.InvitePeer(ctx, &friends_proto.InvitePeerIn{Uuid: peerUUID.String(), Email: email})
+		_, err := s.GetInvitePeer(ctx, &friends_proto.GetInvitePeerIn{Uuid: peerUUID.String(), Email: email})
 		assert.NoError(t, err)
 	})
 
@@ -196,9 +196,9 @@ func TestServer_InvitePeer(t *testing.T) {
 		email := ""
 		repoErr := errors.New("test")
 
-		mockDBRepo.EXPECT().InvitePeer(peerUUID.String(), email).Return(repoErr)
+		mockDBRepo.EXPECT().GetInvitePeer(peerUUID.String(), email).Return(repoErr)
 		s := service.New(mockDBRepo)
-		_, err := s.InvitePeer(ctx, &friends_proto.InvitePeerIn{Uuid: peerUUID.String(), Email: email})
+		_, err := s.GetInvitePeer(ctx, &friends_proto.GetInvitePeerIn{Uuid: peerUUID.String(), Email: email})
 		assert.Error(t, err, repoErr)
 	})
 
@@ -207,9 +207,9 @@ func TestServer_InvitePeer(t *testing.T) {
 		email := "test@test.ru"
 		repoErr := errors.New("test")
 
-		mockDBRepo.EXPECT().InvitePeer(peerUUID, email).Return(repoErr)
+		mockDBRepo.EXPECT().GetInvitePeer(peerUUID, email).Return(repoErr)
 		s := service.New(mockDBRepo)
-		_, err := s.InvitePeer(ctx, &friends_proto.InvitePeerIn{Uuid: peerUUID, Email: email})
+		_, err := s.GetInvitePeer(ctx, &friends_proto.GetInvitePeerIn{Uuid: peerUUID, Email: email})
 		assert.Error(t, err, repoErr)
 	})
 }
