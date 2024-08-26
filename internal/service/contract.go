@@ -6,5 +6,5 @@ type DBRepo interface {
 	GetPeerFollows(initiator string) ([]string, error)
 	GetWhoFollowsPeer(initiator string) ([]string, error)
 	RemoveSubscribe(peer1, peer2 string) error
-	InvitePeer(initiator, email string) error
+	GetInvitePeer(initiator, email string) error
 }

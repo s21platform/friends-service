@@ -75,11 +75,11 @@ func (s *Server) GetWhoFollowPeer(
 	return &friend_proto.GetWhoFollowPeerOut{Subscribers: peers}, nil
 }
 
-func (s *Server) InvitePeer(
-	ctx context.Context, in *friend_proto.InvitePeerIn,
-) (*friend_proto.InvitePeerOut, error) {
+func (s *Server) GetInvitePeer(
+	ctx context.Context, in *friend_proto.GetInvitePeerIn,
+) (*friend_proto.GetInvitePeerOut, error) {
 	_ = ctx
-	err := s.dbR.InvitePeer(in.Uuid, in.Email)
+	err := s.dbR.GetInvitePeer(in.Uuid, in.Email)
 
-	return &friend_proto.InvitePeerOut{}, err
+	return &friend_proto.GetInvitePeerOut{}, err
 }

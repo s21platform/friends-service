@@ -115,7 +115,7 @@ func (r *Repository) RemoveSubscribe(peer1, peer2 string) error {
 	return nil
 }
 
-func (r *Repository) InvitePeer(uuid, email string) error {
+func (r *Repository) GetInvitePeer(uuid, email string) error {
 	res, err := r.isRowInviteExist(uuid, email)
 	if err != nil {
 		return err
