@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"github.com/s21platform/friends-service/internal/repository/Kafka/consumer"
 	"log"
 	"time"
 
@@ -26,5 +28,26 @@ func main() {
 	err = prod.SendMessage(ctx, []byte("Hello, test"))
 	if err != nil {
 		log.Println("Error sendMessage: ", err)
+	}
+
+	reader, err := consumer.New(env)
+	defer reader.Close()
+	if err != nil {
+		log.Println("Error create reader: ", err)
+	}
+
+	for {
+		msg, err := reader.ReadMessage(10 * time.Microsecond)
+		if err != nil {
+			log.Fatalf("Error reading message: %v", err)
+		}
+
+		fmt.Printf("Message at offset %d from topic %s:\nKey: %s, Value: %s\n",
+			msg.Offset, msg.Topic, string(msg.Key), string(msg.Value))
+
+		// Удалось ли сообщение?
+		if err = reader.CommitMessages(msg); err != nil {
+			log.Printf("Failed to commit message: %v", err)
+		}
 	}
 }

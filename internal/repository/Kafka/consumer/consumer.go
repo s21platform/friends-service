@@ -1,54 +1,53 @@
 package consumer
 
 import (
-	"fmt"
+	"context"
+	"github.com/s21platform/friends-service/internal/config"
 	"time"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/s21platform/friends-service/internal/config"
+	"github.com/segmentio/kafka-go"
 )
 
 type KafkaConsumer struct {
-	Consumer *kafka.Consumer
+	Reader *kafka.Reader
 }
 
 func New(cfg *config.Config) (*KafkaConsumer, error) {
-	cfgMap := &kafka.ConfigMap{
-		"bootstrap.servers": cfg.Kafka.Server,
-		"group.id":          cfg.Kafka.GroupID,
-	}
-
-	consumer, err := kafka.NewConsumer(cfgMap)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Kafka consumer: %w", err)
-	}
-
-	err = consumer.SubscribeTopics([]string{cfg.Kafka.TopicForReading}, nil)
-	if err != nil {
-		fmt.Printf("Error subscribing: %s\n", err)
-	}
+	brokerList := []string{cfg.Kafka.Server}
+	reader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers:  brokerList,
+		Topic:    cfg.Kafka.TopicForReading,
+		GroupID:  cfg.Kafka.GroupID,
+		MinBytes: 10e+6, // 10MB
+		MaxBytes: 10e+7, // 20MB
+		Offset:   0,
+		MaxWait:  1 * time.Second,
+	})
 
 	return &KafkaConsumer{
-		Consumer: consumer,
+		Reader: reader,
 	}, nil
 }
 
-func (kc *KafkaConsumer) ReadMessage(timeout time.Duration) (**kafka.Message, error) {
-	// Получаем текущее время
+func (kc *KafkaConsumer) ReadMessage(timeout time.Duration) (*kafka.Message, error) {
 	startTime := time.Now()
-
-	// Цикл ожидания сообщения
 	for {
-		// Пытаемся получить сообщение с таймаутом
-		msg, err := kc.Consumer.ReadMessage(-1)
-		if err == nil && msg.Timestamp.Before(startTime.Add(timeout)) {
-			// Сообщение получено в пределах таймаута
-			return &msg, nil
-		} else if err != nil {
-			// Произошла ошибка при чтении сообщения
+		msg, err := kc.Reader.FetchMessage(context.Background())
+		if err != nil {
 			return nil, err
 		}
-		// Если сообщение не получено в пределах таймаута, ждем некоторое время перед повторным запросом
+
+		if startTime.Add(timeout).Before(time.Now()) {
+			return &msg, nil
+		}
+
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func (kc *KafkaConsumer) Close() error {
+	return kc.Reader.Close()
+}
+
+func (kc *KafkaConsumer) CommitMessages(msg *kafka.Message) error {
 }
