@@ -2,9 +2,10 @@ package consumer
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/s21platform/friends-service/internal/config"
-	"time"
 )
 
 type KafkaConsumer struct {
@@ -14,7 +15,7 @@ type KafkaConsumer struct {
 func New(cfg *config.Config) (*KafkaConsumer, error) {
 	cfgMap := &kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.Server,
-		"group.id":          cfg.Kafka.GroupId,
+		"group.id":          cfg.Kafka.GroupID,
 	}
 
 	consumer, err := kafka.NewConsumer(cfgMap)

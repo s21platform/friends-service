@@ -6,9 +6,32 @@ on:
 
 
 jobs:
+  linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+    env:
+      GO_PATHS_CMD: cmd/service cmd/workers/notification
+      GO_PATHS_INTERNAL: internal/config internal/repository/db internal/repository/Kafka/consumer internal/repository/Kafka/producer internal/service
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+      - name: Run golangci-lint
+        run: golangci-lint run --config=.golangci.yml ${{ env.GO_PATHS_CMD }} ${{ env.GO_PATHS_INTERNAL }}
+
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    needs: linters
 
     steps:
       - name: Checkout code
@@ -22,15 +45,15 @@ jobs:
       - name: Run tests
         run: go test -coverprofile=coverage.out -tags=test -v ./...
 
-#      - name: Check coverage
-#        run: |
-#          go tool cover -func=coverage.out -o=coverage.txt
-#          coverage=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
-#          echo "Coverage is $coverage%"
-#          if (( $(echo "$coverage < 80.0" | bc -l) )); then
-#          echo "Coverage is below 80%"
-#          exit 1
-#          fi
+      #      - name: Check coverage
+      #        run: |
+      #          go tool cover -func=coverage.out -o=coverage.txt
+      #          coverage=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+      #          echo "Coverage is $coverage%"
+      #          if (( $(echo "$coverage < 80.0" | bc -l) )); then
+      #          echo "Coverage is below 80%"
+      #          exit 1
+      #          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
@@ -65,4 +88,4 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE_DEVELOP }}
           script: |
             docker pull ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop
-            docker-compose -f ~/space21/docker-compose-dev.yml --env-file ~/space21/.env_dev up -d ${{ secrets.CR_NAME }}
+            docker-compose -f ~/space21/staging/staging-deployment/docker-compose.yml --env-file ~/space21/staging/.env up -d ${{ secrets.CR_NAME }}
