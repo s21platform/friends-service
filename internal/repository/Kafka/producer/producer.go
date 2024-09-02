@@ -36,10 +36,20 @@ func (kp *KafkaProducer) Close() error {
 	return kp.Producer.Close()
 }
 
-func (kp *KafkaProducer) SendMessage(ctx context.Context, value []byte) error {
+func (kp *KafkaProducer) sendMessage(ctx context.Context, value []byte) error {
 	err := kp.Producer.WriteMessages(ctx, kafka.Message{
 		Value: value,
 	})
 
 	return err
+}
+
+func (kp *KafkaProducer) Process(msg []byte) error {
+	err := kp.sendMessage(context.Background(), msg)
+
+	if err != nil {
+		return fmt.Errorf("kp.sendMessage: %v", err)
+	}
+
+	return nil
 }

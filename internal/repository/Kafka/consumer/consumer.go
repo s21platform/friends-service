@@ -3,6 +3,7 @@ package consumer
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
@@ -31,7 +32,7 @@ func New(cfg *config.Config) (*KafkaConsumer, error) {
 	return &KafkaConsumer{Consumer: reader}, nil
 }
 
-func (kc *KafkaConsumer) ReadMessage() (kafka.Message, error) {
+func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
 	msg, err := kc.Consumer.ReadMessage(context.Background())
 
 	if err != nil {
@@ -39,4 +40,14 @@ func (kc *KafkaConsumer) ReadMessage() (kafka.Message, error) {
 	}
 
 	return msg, nil
+}
+
+func (kc *KafkaConsumer) Process() []byte {
+	msg, err := kc.readMessage()
+
+	if err != nil {
+		log.Println("Error read message: ", err)
+	}
+
+	return msg.Value
 }

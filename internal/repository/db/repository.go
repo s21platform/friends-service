@@ -185,3 +185,41 @@ func New(cfg *config.Config) (*Repository, error) {
 
 	return nil, err
 }
+
+func (r *Repository) GetUUIDForEmail(email []byte) ([]byte, error) {
+	var res []byte
+
+	row, err := r.connection.Query("SELECT initiator FROM user_invite WHERE invited = $1", string(email))
+
+	if err != nil {
+		return nil, fmt.Errorf("r.connection.Exec: %v", err)
+	}
+
+	email = []byte(string(email) + ",")
+	res = append(res, email...)
+	found := false
+
+	for row.Next() {
+		var initiator []byte
+		err = row.Scan(&initiator)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		initiator = []byte(string(initiator) + ",")
+		fmt.Println("Row", string(initiator))
+		res = append(res, initiator...)
+		found = true
+	}
+
+	if err := row.Err(); err != nil {
+		return nil, fmt.Errorf("row.Err() %v", err)
+	}
+
+	if !found {
+		return nil, fmt.Errorf("r.connection.Query: no row")
+	}
+
+	return res, nil
+}
