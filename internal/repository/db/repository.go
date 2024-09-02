@@ -3,10 +3,11 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
-	"github.com/s21platform/friends-service/internal/config"
 	"log"
 	"time"
+
+	_ "github.com/lib/pq" // Импортируем данную библиотеку для работы с бд.
+	"github.com/s21platform/friends-service/internal/config"
 )
 
 type Repository struct {
