@@ -44,10 +44,5 @@ func main() {
 
 		fmt.Printf("Message at offset %d from topic %s:\nKey: %s, Value: %s\n",
 			msg.Offset, msg.Topic, string(msg.Key), string(msg.Value))
-
-		// Удалось ли сообщение?
-		if err = reader.CommitMessages(msg); err != nil {
-			log.Printf("Failed to commit message: %v", err)
-		}
 	}
 }

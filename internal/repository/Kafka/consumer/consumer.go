@@ -48,6 +48,3 @@ func (kc *KafkaConsumer) ReadMessage(timeout time.Duration) (*kafka.Message, err
 func (kc *KafkaConsumer) Close() error {
 	return kc.Reader.Close()
 }
-
-func (kc *KafkaConsumer) CommitMessages(msg *kafka.Message) error {
-}
