@@ -1,54 +1,42 @@
 package consumer
 
 import (
+	"context"
 	"fmt"
-	"time"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/s21platform/friends-service/internal/config"
+	"github.com/segmentio/kafka-go"
 )
 
 type KafkaConsumer struct {
-	Consumer *kafka.Consumer
+	Consumer *kafka.Reader
 }
 
 func New(cfg *config.Config) (*KafkaConsumer, error) {
-	cfgMap := &kafka.ConfigMap{
-		"bootstrap.servers": cfg.Kafka.Server,
-		"group.id":          cfg.Kafka.GroupID,
-	}
+	broker := []string{cfg.Kafka.Server}
+	reader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: broker,
+		Topic:   cfg.Kafka.TopicForReading,
+	})
 
-	consumer, err := kafka.NewConsumer(cfgMap)
+	ctx, cansel := context.WithCancel(context.Background())
+	defer cansel()
+
+	_, err := reader.ReadMessage(ctx)
+
 	if err != nil {
-		return nil, fmt.Errorf("failed to create Kafka consumer: %w", err)
+		return nil, fmt.Errorf("kafka.NewReader: %v", err)
 	}
 
-	err = consumer.SubscribeTopics([]string{cfg.Kafka.TopicForReading}, nil)
-	if err != nil {
-		fmt.Printf("Error subscribing: %s\n", err)
-	}
-
-	return &KafkaConsumer{
-		Consumer: consumer,
-	}, nil
+	return &KafkaConsumer{Consumer: reader}, nil
 }
 
-func (kc *KafkaConsumer) ReadMessage(timeout time.Duration) (**kafka.Message, error) {
-	// Получаем текущее время
-	startTime := time.Now()
+func (kc *KafkaConsumer) ReadMessage() (kafka.Message, error) {
+	msg, err := kc.Consumer.ReadMessage(context.Background())
 
-	// Цикл ожидания сообщения
-	for {
-		// Пытаемся получить сообщение с таймаутом
-		msg, err := kc.Consumer.ReadMessage(-1)
-		if err == nil && msg.Timestamp.Before(startTime.Add(timeout)) {
-			// Сообщение получено в пределах таймаута
-			return &msg, nil
-		} else if err != nil {
-			// Произошла ошибка при чтении сообщения
-			return nil, err
-		}
-		// Если сообщение не получено в пределах таймаута, ждем некоторое время перед повторным запросом
-		time.Sleep(100 * time.Millisecond)
+	if err != nil {
+		return kafka.Message{}, fmt.Errorf("kc.ReadMessage: %v", err)
 	}
+
+	return msg, nil
 }
