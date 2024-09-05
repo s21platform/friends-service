@@ -2,7 +2,9 @@ package producer
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
@@ -36,19 +38,41 @@ func (kp *KafkaProducer) Close() error {
 	return kp.Producer.Close()
 }
 
-func (kp *KafkaProducer) sendMessage(ctx context.Context, value []byte) error {
-	err := kp.Producer.WriteMessages(ctx, kafka.Message{
-		Value: value,
-	})
+func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) error {
+	jsonMsg := struct {
+		Email string `json:"email"`
+		UUID  string `json:"uuid"`
+	}{Email: email,
+		UUID: value}
 
-	return err
-}
-
-func (kp *KafkaProducer) Process(msg []byte) error {
-	err := kp.sendMessage(context.Background(), msg)
+	msg, err := json.Marshal(jsonMsg)
 
 	if err != nil {
-		return fmt.Errorf("kp.sendMessage: %v", err)
+		return fmt.Errorf("json.Marsha: %v", err)
+	}
+
+	err = kp.Producer.WriteMessages(ctx, kafka.Message{
+		Value: msg,
+	})
+	if err != nil {
+		return fmt.Errorf("kp.Producer.WriteMessages: %v", err)
+	}
+
+	return nil
+}
+
+func (kp *KafkaProducer) Process(email, msgs string) error {
+	msg := strings.Split(msgs, ",")
+	for _, val := range msg {
+		if val == "" {
+			continue
+		}
+
+		err := kp.sendMessage(context.Background(), email, val)
+
+		if err != nil {
+			return fmt.Errorf("kp.sendMessage: %v", err)
+		}
 	}
 
 	return nil

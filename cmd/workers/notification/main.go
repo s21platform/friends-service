@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/s21platform/friends-service/internal/repository/db"
 
@@ -35,6 +37,9 @@ func main() {
 		log.Println("Error create consumer: ", err)
 	}
 
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+
 	go func() {
 		for {
 			readMsg := cons.Process()
@@ -45,18 +50,21 @@ func main() {
 				continue
 			}
 
-			err = prod.Process(writeMsg)
+			err = prod.Process(string(readMsg), writeMsg)
 
 			if err != nil {
-				fmt.Println("prod.Process ", err)
+				fmt.Println("prod.Process: ", err)
 				break
+			}
+
+			err = dbRepo.UpdateUserInvite(string(readMsg))
+
+			if err != nil {
+				fmt.Println("Not update DB: ", err)
 			}
 		}
 	}()
 
-	for {
-		// todo зачем это надо, далее код что бы не ругался линтер
-		var i int //
-		_ = i
-	}
+	<-done
+	log.Println("Shutting down gracefully...")
 }

@@ -18,6 +18,7 @@ func New(cfg *config.Config) (*KafkaConsumer, error) {
 	reader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: broker,
 		Topic:   cfg.Kafka.TopicForReading,
+		GroupID: "123",
 	})
 
 	ctx, cansel := context.WithCancel(context.Background())
