@@ -47,3 +47,6 @@ linter-settings:
   funlen:
     lines: 120
     statements: 50
+  revive:
+    package-name:
+      allow-underscore: true

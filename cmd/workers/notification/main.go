@@ -10,7 +10,7 @@ import (
 	"github.com/s21platform/friends-service/internal/repository/db"
 
 	"github.com/s21platform/friends-service/internal/config"
-	"github.com/s21platform/friends-service/internal/repository/Kafka/consumer"
+	"github.com/s21platform/friends-service/internal/repository/Kafka/consumer_new_user"
 	"github.com/s21platform/friends-service/internal/repository/Kafka/producer"
 )
 
@@ -31,10 +31,10 @@ func main() {
 
 	defer prod.Close()
 
-	cons, err := consumer.New(env)
+	cons, err := consumer_new_user.New(env)
 
 	if err != nil {
-		log.Println("Error create consumer: ", err)
+		log.Println("Error create consumer_new_user: ", err)
 	}
 
 	done := make(chan os.Signal, 1)

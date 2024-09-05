@@ -1,4 +1,4 @@
-package consumer
+package consumer_new_user
 
 import (
 	"context"
