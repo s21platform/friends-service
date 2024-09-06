@@ -11,13 +11,13 @@ import (
 type KafkaConsumer struct {
 	consumer                *kafka.Reader
 	notificationNewPeerProd ProdRepo
-	dbRepo                  DBRepo
+	storage                 Storage
 }
 
 func New(
 	cfg *config.Config,
 	prod ProdRepo,
-	dbRepo DBRepo,
+	storage Storage,
 ) (*KafkaConsumer, error) {
 	broker := []string{cfg.Kafka.Server}
 	reader := kafka.NewReader(kafka.ReaderConfig{
@@ -37,7 +37,7 @@ func New(
 
 	return &KafkaConsumer{consumer: reader,
 		notificationNewPeerProd: prod,
-		dbRepo:                  dbRepo}, nil
+		storage:                 storage}, nil
 }
 
 func (kc *KafkaConsumer) Listen() {
@@ -49,7 +49,7 @@ func (kc *KafkaConsumer) Listen() {
 			continue
 		}
 
-		writeMsg, err := kc.dbRepo.GetUUIDForEmail(readMsg)
+		writeMsg, err := kc.storage.GetUUIDForEmail(readMsg)
 
 		if err != nil {
 			fmt.Println("Not work: ", err)
@@ -63,7 +63,7 @@ func (kc *KafkaConsumer) Listen() {
 			continue
 		}
 
-		err = kc.dbRepo.UpdateUserInvite(string(readMsg))
+		err = kc.storage.UpdateUserInvite(string(readMsg))
 
 		if err != nil {
 			fmt.Println("Not update DB: ", err)
