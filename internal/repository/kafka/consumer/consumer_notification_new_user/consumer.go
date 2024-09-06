@@ -5,16 +5,24 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/s21platform/friends-service/internal/repository/db"
+	"github.com/s21platform/friends-service/internal/repository/kafka/producer/producer_notification_new_user"
+
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
 )
 
 type KafkaConsumer struct {
 	Consumer                *kafka.Reader
-	NotificationNewPeerProd *kafka.Writer
+	NotificationNewPeerProd *producer_notification_new_user.KafkaProducer
+	dbRepo                  *db.Repository
 }
 
-func New(cfg *config.Config) (*KafkaConsumer, error) {
+func New(
+	cfg *config.Config,
+	prod *producer_notification_new_user.KafkaProducer,
+	dbRepo *db.Repository,
+) (*KafkaConsumer, error) {
 	broker := []string{cfg.Kafka.Server}
 	reader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: broker,
@@ -31,7 +39,34 @@ func New(cfg *config.Config) (*KafkaConsumer, error) {
 		return nil, fmt.Errorf("kafka.NewReader: %v", err)
 	}
 
-	return &KafkaConsumer{Consumer: reader}, nil
+	return &KafkaConsumer{Consumer: reader,
+		NotificationNewPeerProd: prod,
+		dbRepo:                  dbRepo}, nil
+}
+
+func (kc *KafkaConsumer) Listen() {
+	for {
+		readMsg := kc.process()
+		writeMsg, err := kc.dbRepo.GetUUIDForEmail(readMsg)
+
+		if err != nil {
+			fmt.Println("Not work: ", err)
+			continue
+		}
+
+		err = kc.NotificationNewPeerProd.Process(string(readMsg), writeMsg)
+
+		if err != nil {
+			fmt.Println("NewUserProd.process: ", err)
+			break
+		}
+
+		err = kc.dbRepo.UpdateUserInvite(string(readMsg))
+
+		if err != nil {
+			fmt.Println("Not update DB: ", err)
+		}
+	}
 }
 
 func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
@@ -44,7 +79,7 @@ func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
 	return msg, nil
 }
 
-func (kc *KafkaConsumer) Process() []byte {
+func (kc *KafkaConsumer) process() []byte {
 	msg, err := kc.readMessage()
 
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
 )
