@@ -1,4 +1,4 @@
-package producer_notification_new_user //nolint:revive,stylecheck
+package notification_new_user //nolint:revive,stylecheck
 
 import (
 	"context"
@@ -10,8 +10,7 @@ import (
 )
 
 type KafkaProducer struct {
-	Producer *kafka.Writer
-	Topic    *config.Kafka
+	producer *kafka.Writer
 }
 
 func New(cfg *config.Config) (*KafkaProducer, error) {
@@ -30,11 +29,11 @@ func New(cfg *config.Config) (*KafkaProducer, error) {
 		RequiredAcks: kafka.RequireAll,    // подтверждение о том что сообщение доставлено
 	}
 
-	return &KafkaProducer{Producer: writer, Topic: &cfg.Kafka}, nil
+	return &KafkaProducer{producer: writer}, nil
 }
 
 func (kp *KafkaProducer) Close() error {
-	return kp.Producer.Close()
+	return kp.producer.Close()
 }
 
 func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) error {
@@ -50,11 +49,11 @@ func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) e
 		return fmt.Errorf("json.Marshal: %v", err)
 	}
 
-	err = kp.Producer.WriteMessages(ctx, kafka.Message{
+	err = kp.producer.WriteMessages(ctx, kafka.Message{
 		Value: msg,
 	})
 	if err != nil {
-		return fmt.Errorf("kp.Producer.WriteMessages: %v", err)
+		return fmt.Errorf("kp.producer.WriteMessages: %v", err)
 	}
 
 	return nil

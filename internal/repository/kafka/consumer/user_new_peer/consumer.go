@@ -1,27 +1,23 @@
-package consumer_notification_new_user //nolint:revive,stylecheck
+package user_new_peer //nolint:revive,stylecheck
 
 import (
 	"context"
 	"fmt"
-	"log"
-
-	"github.com/s21platform/friends-service/internal/repository/db"
-	"github.com/s21platform/friends-service/internal/repository/kafka/producer/producer_notification_new_user"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
 )
 
 type KafkaConsumer struct {
-	Consumer                *kafka.Reader
-	NotificationNewPeerProd *producer_notification_new_user.KafkaProducer
-	dbRepo                  *db.Repository
+	consumer                *kafka.Reader
+	notificationNewPeerProd ProdRepo
+	dbRepo                  DBRepo
 }
 
 func New(
 	cfg *config.Config,
-	prod *producer_notification_new_user.KafkaProducer,
-	dbRepo *db.Repository,
+	prod ProdRepo,
+	dbRepo DBRepo,
 ) (*KafkaConsumer, error) {
 	broker := []string{cfg.Kafka.Server}
 	reader := kafka.NewReader(kafka.ReaderConfig{
@@ -39,14 +35,20 @@ func New(
 		return nil, fmt.Errorf("kafka.NewReader: %v", err)
 	}
 
-	return &KafkaConsumer{Consumer: reader,
-		NotificationNewPeerProd: prod,
+	return &KafkaConsumer{consumer: reader,
+		notificationNewPeerProd: prod,
 		dbRepo:                  dbRepo}, nil
 }
 
 func (kc *KafkaConsumer) Listen() {
 	for {
-		readMsg := kc.process()
+		readMsg, err := kc.process()
+
+		if err != nil {
+			fmt.Println("kc.process() ", err)
+			continue
+		}
+
 		writeMsg, err := kc.dbRepo.GetUUIDForEmail(readMsg)
 
 		if err != nil {
@@ -54,11 +56,11 @@ func (kc *KafkaConsumer) Listen() {
 			continue
 		}
 
-		err = kc.NotificationNewPeerProd.Process(string(readMsg), writeMsg)
+		err = kc.notificationNewPeerProd.Process(string(readMsg), writeMsg)
 
 		if err != nil {
 			fmt.Println("NewUserProd.process: ", err)
-			break
+			continue
 		}
 
 		err = kc.dbRepo.UpdateUserInvite(string(readMsg))
@@ -70,7 +72,7 @@ func (kc *KafkaConsumer) Listen() {
 }
 
 func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
-	msg, err := kc.Consumer.ReadMessage(context.Background())
+	msg, err := kc.consumer.ReadMessage(context.Background())
 
 	if err != nil {
 		return kafka.Message{}, fmt.Errorf("kc.ReadMessage: %v", err)
@@ -79,12 +81,12 @@ func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
 	return msg, nil
 }
 
-func (kc *KafkaConsumer) process() []byte {
+func (kc *KafkaConsumer) process() ([]byte, error) {
 	msg, err := kc.readMessage()
 
 	if err != nil {
-		log.Println("Error read message: ", err)
+		return nil, fmt.Errorf("kc.readMessage: %v", err)
 	}
 
-	return msg.Value
+	return msg.Value, nil
 }

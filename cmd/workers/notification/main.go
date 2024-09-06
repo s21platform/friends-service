@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/s21platform/friends-service/internal/repository/db"
-	"github.com/s21platform/friends-service/internal/repository/kafka/consumer/consumer_notification_new_user"
-	"github.com/s21platform/friends-service/internal/repository/kafka/producer/producer_notification_new_user"
+	"github.com/s21platform/friends-service/internal/repository/kafka/producer/notification_new_user"
 
 	"github.com/s21platform/friends-service/internal/config"
+	"github.com/s21platform/friends-service/internal/repository/db"
+	"github.com/s21platform/friends-service/internal/repository/kafka/consumer/user_new_peer"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	NewUserProd, err := producer_notification_new_user.New(cfg)
+	NewUserProd, err := notification_new_user.New(cfg)
 
 	if err != nil {
 		log.Println("Error create producer: ", err)
@@ -28,10 +28,10 @@ func main() {
 
 	defer NewUserProd.Close()
 
-	NewUserCons, err := consumer_notification_new_user.New(cfg, NewUserProd, dbRepo)
+	NewUserCons, err := user_new_peer.New(cfg, NewUserProd, dbRepo)
 
 	if err != nil {
-		log.Println("Error create consumer_notification_new_user: ", err)
+		log.Println("Error create user_new_peer: ", err)
 	}
 
 	NewUserCons.Listen()
