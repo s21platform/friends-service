@@ -1,11 +1,9 @@
-package producer
+package producer_notification_new_user //nolint:revive,stylecheck
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
-
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
 )
@@ -48,7 +46,7 @@ func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) e
 	msg, err := json.Marshal(jsonMsg)
 
 	if err != nil {
-		return fmt.Errorf("json.Marsha: %v", err)
+		return fmt.Errorf("json.Marshal: %v", err)
 	}
 
 	err = kp.Producer.WriteMessages(ctx, kafka.Message{
@@ -61,13 +59,8 @@ func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) e
 	return nil
 }
 
-func (kp *KafkaProducer) Process(email, msgs string) error {
-	msg := strings.Split(msgs, ",")
-	for _, val := range msg {
-		if val == "" {
-			continue
-		}
-
+func (kp *KafkaProducer) Process(email string, msgs []string) error {
+	for _, val := range msgs {
 		err := kp.sendMessage(context.Background(), email, val)
 
 		if err != nil {

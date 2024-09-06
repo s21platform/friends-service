@@ -1,4 +1,4 @@
-package consumer_new_user
+package consumer_notification_new_user //nolint:revive,stylecheck
 
 import (
 	"context"
@@ -10,7 +10,8 @@ import (
 )
 
 type KafkaConsumer struct {
-	Consumer *kafka.Reader
+	Consumer                *kafka.Reader
+	NotificationNewPeerProd *kafka.Writer
 }
 
 func New(cfg *config.Config) (*KafkaConsumer, error) {

@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/s21platform/friends-service/internal/repository/kafka/consumer/consumer_notification_new_user"
+	"github.com/s21platform/friends-service/internal/repository/kafka/produser/producer_notification_new_user"
 	"log"
 	"os"
 	"os/signal"
@@ -10,8 +12,6 @@ import (
 	"github.com/s21platform/friends-service/internal/repository/db"
 
 	"github.com/s21platform/friends-service/internal/config"
-	"github.com/s21platform/friends-service/internal/repository/Kafka/consumer_new_user"
-	"github.com/s21platform/friends-service/internal/repository/Kafka/producer"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	prod, err := producer.New(env)
+	prod, err := producer_notification_new_user.New(env)
 
 	if err != nil {
 		log.Println("Error create produser: ", err)
@@ -31,10 +31,10 @@ func main() {
 
 	defer prod.Close()
 
-	cons, err := consumer_new_user.New(env)
+	cons, err := consumer_notification_new_user.New(env)
 
 	if err != nil {
-		log.Println("Error create consumer_new_user: ", err)
+		log.Println("Error create consumer_notification_new_user: ", err)
 	}
 
 	done := make(chan os.Signal, 1)

@@ -186,13 +186,13 @@ func New(cfg *config.Config) (*Repository, error) {
 	return nil, err
 }
 
-func (r *Repository) GetUUIDForEmail(email []byte) (string, error) {
-	var res string
+func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
+	var res []string
 
 	row, err := r.connection.Query("SELECT initiator FROM user_invite WHERE invited = $1", string(email))
 
 	if err != nil {
-		return "", fmt.Errorf("r.connection.Exec: %v", err)
+		return nil, fmt.Errorf("r.connection.Exec: %v", err)
 	}
 
 	found := false
@@ -205,17 +205,16 @@ func (r *Repository) GetUUIDForEmail(email []byte) (string, error) {
 			log.Fatal(err)
 		}
 
-		initiator += ","
-		res += initiator
+		res = append(res, initiator)
 		found = true
 	}
 
 	if err := row.Err(); err != nil {
-		return "", fmt.Errorf("row.Err() %v", err)
+		return nil, fmt.Errorf("row.Err() %v", err)
 	}
 
 	if !found {
-		return "", fmt.Errorf("r.connection.Query: no row")
+		return nil, fmt.Errorf("r.connection.Query: no row")
 	}
 
 	return res, nil
