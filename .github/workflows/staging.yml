@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO_PATHS_CMD: cmd/service cmd/workers/notification
-      GO_PATHS_INTERNAL: internal/config internal/repository/db internal/repository/kafka/consumer_notification_new_user internal/repository/kafka/producer_notification_new_user internal/service
+      GO_PATHS_INTERNAL: internal/config internal/repository/db internal/repository/kafka/consumer/consumer_notification_new_user internal/repository/kafka/producer/producer_notification_new_user internal/service
 
     steps:
       - name: Checkout code
