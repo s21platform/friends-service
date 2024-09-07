@@ -2,13 +2,12 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"github.com/s21platform/friends-service/internal/repository/kafka/producer/notification_new_user"
+	notificationnewuser "github.com/s21platform/friends-service/internal/repository/kafka/producer/notification_new_user"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/s21platform/friends-service/internal/repository/db"
-	"github.com/s21platform/friends-service/internal/repository/kafka/consumer/user_new_peer"
+	usernewpeer "github.com/s21platform/friends-service/internal/repository/kafka/consumer/user_new_peer"
 )
 
 func main() {
@@ -16,22 +15,25 @@ func main() {
 	dbRepo, err := db.New(cfg)
 
 	if err != nil {
-		log.Printf("db.New: %v", err)
-		os.Exit(1)
+		log.Fatalf("db.New: %v", err)
 	}
 
-	NewUserProd, err := notification_new_user.New(cfg, dbRepo)
+	NewUserProd, err := notificationnewuser.New(cfg, dbRepo)
 
 	if err != nil {
-		log.Println("Error create producer: ", err)
+		_ = NewUserProd.Close()
+
+		log.Fatalf("Error create producer: %v", err)
 	}
 
 	defer NewUserProd.Close()
 
-	NewUserCons, err := user_new_peer.New(cfg, NewUserProd, dbRepo)
+	NewUserCons, err := usernewpeer.New(cfg, NewUserProd, dbRepo)
 
 	if err != nil {
-		log.Println("Error create user_new_peer: ", err)
+		_ = NewUserProd.Close()
+
+		log.Fatalf("Error create user_new_peer: %v", err) //nolint:gocritic
 	}
 
 	NewUserCons.Listen()
