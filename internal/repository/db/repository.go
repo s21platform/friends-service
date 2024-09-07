@@ -202,7 +202,7 @@ func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
 		err = row.Scan(&initiator)
 
 		if err != nil {
-			log.Fatal(err)
+			return nil, fmt.Errorf("row.Scan: %v", err)
 		}
 
 		res = append(res, initiator)
