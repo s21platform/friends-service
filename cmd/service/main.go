@@ -26,13 +26,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	defer dbRepo.Close()
-
 	m, err := pkg.NewMetrics("217.28.222.68", 3000)
 	if err != nil {
 		log.Printf("metrics: %v", err)
 		os.Exit(1)
 	}
+
+	defer dbRepo.Close()
 
 	m.Test()
 
