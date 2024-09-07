@@ -20,16 +20,16 @@ func main() {
 	// чтение конфига
 	cfg := config.MustLoad()
 	dbRepo, err := db.New(cfg)
+	if err != nil {
+		log.Printf("db.New: %v", err)
+		os.Exit(1)
+	}
+
 	m, err := pkg.NewMetrics("217.28.222.68", 3000)
 	if err != nil {
 		log.Fatal(err)
 	}
 	m.Test()
-
-	if err != nil {
-		log.Printf("db.New: %v", err)
-		os.Exit(1)
-	}
 
 	defer dbRepo.Close()
 
