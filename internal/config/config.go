@@ -29,7 +29,7 @@ type ReadEnvBD struct {
 type Kafka struct {
 	TopicForReading string `env:"FRIENDS_SERVICE_NOTIFICATION_KAFKA_TOPIC"`
 	TopicForWriting string `env:"NOTIFICATION_SERVICE_FRIENDS_TOPIC"`
-	Server          string `env:"KAFKA_SERVER" envDefault:"localhost:9092"`
+	Server          string `env:"KAFKA_SERVER"`
 	GroupID         string `env:"KAFKA_GROUP_ID" envDefault:"test"`
 	AutoOffset      string `env:"KAFKA_OFFSET" envDefault:"latest"`
 }

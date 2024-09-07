@@ -185,3 +185,50 @@ func New(cfg *config.Config) (*Repository, error) {
 
 	return nil, err
 }
+
+func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
+	var res []string
+
+	row, err := r.connection.Query("SELECT initiator FROM user_invite WHERE invited = $1", string(email))
+
+	if err != nil {
+		return nil, fmt.Errorf("r.connection.Exec: %v", err)
+	}
+
+	found := false
+
+	for row.Next() {
+		var initiator string
+		err = row.Scan(&initiator)
+
+		if err != nil {
+			return nil, fmt.Errorf("row.Scan: %v", err)
+		}
+
+		res = append(res, initiator)
+		found = true
+	}
+
+	if err := row.Err(); err != nil {
+		return nil, fmt.Errorf("row.Err() %v", err)
+	}
+
+	if !found {
+		return nil, fmt.Errorf("r.connection.Query: no row")
+	}
+
+	return res, nil
+}
+
+func (r *Repository) UpdateUserInvite(initiator, invited string) error {
+	_, err := r.connection.Exec("UPDATE user_invite SET is_closed=true WHERE initiator=$1 AND invited=$2",
+		initiator,
+		invited,
+	)
+
+	if err != nil {
+		return fmt.Errorf("r.connection.Exec UPDATE user_invite: %v", err)
+	}
+
+	return nil
+}
