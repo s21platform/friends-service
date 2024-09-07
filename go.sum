@@ -128,6 +128,8 @@ github.com/s21platform/friends-proto v0.0.3 h1:D/xiR7iU69Z10G3tj458rWY/5Bt/rpyAA
 github.com/s21platform/friends-proto v0.0.3/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
 github.com/s21platform/friends-proto v0.0.4 h1:wEwVue2/BzDRsBtm//SXkFPMYiFj1p+5lLeBS6Yncj4=
 github.com/s21platform/friends-proto v0.0.4/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
+github.com/s21platform/metrics-lib v0.0.0-20240907214902-2230befab212 h1:UqJHwT5WBOYKbFN0AFkSaFDwul3J59AZyjtM2gYpYUo=
+github.com/s21platform/metrics-lib v0.0.0-20240907214902-2230befab212/go.mod h1:DJHCQmvq1cRsSHCDtMhsoCufr6rTnOhMQrCT1J46KpA=
 github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd h1:wwK2hZosyS8zp/SjcXHL5zlxUbNCaxrfYz9hTKdE94Y=
 github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd/go.mod h1:ziBhdNANl68mWxKR7Po1z7NStqbAjVLMvKwh/mlVYis=
 github.com/santhosh-tekuri/jsonschema/v5 v5.0.0/go.mod h1:FKdcjfQW6rpZSnxxUvEA5H/cDPdvJ/SZJQLWWXWGrZ0=

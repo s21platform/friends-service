@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/s21platform/metrics-lib/pkg"
 	"log"
 	"net"
 	"os"
@@ -19,6 +20,11 @@ func main() {
 	// чтение конфига
 	cfg := config.MustLoad()
 	dbRepo, err := db.New(cfg)
+	m, err := pkg.NewMetrics("217.28.222.68", 3000)
+	if err != nil {
+		log.Fatal(err)
+	}
+	m.Test()
 
 	if err != nil {
 		log.Printf("db.New: %v", err)
