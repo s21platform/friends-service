@@ -11,9 +11,10 @@ import (
 
 type KafkaProducer struct {
 	producer *kafka.Writer
+	storage  Storage
 }
 
-func New(cfg *config.Config) (*KafkaProducer, error) {
+func New(cfg *config.Config, storage Storage) (*KafkaProducer, error) {
 	if cfg.Kafka.Server == "" {
 		return nil, fmt.Errorf("kafka server address is not provided")
 	}
@@ -29,7 +30,7 @@ func New(cfg *config.Config) (*KafkaProducer, error) {
 		RequiredAcks: kafka.RequireAll,    // подтверждение о том что сообщение доставлено
 	}
 
-	return &KafkaProducer{producer: writer}, nil
+	return &KafkaProducer{producer: writer, storage: storage}, nil
 }
 
 func (kp *KafkaProducer) Close() error {
@@ -65,6 +66,12 @@ func (kp *KafkaProducer) Process(email string, msgs []string) error {
 
 		if err != nil {
 			return fmt.Errorf("kp.sendMessage: %v", err)
+		}
+
+		err = kp.storage.UpdateUserInvite(val, email)
+
+		if err != nil {
+			return fmt.Errorf("kp.storage.UpdateUserInvite: %v", err)
 		}
 	}
 

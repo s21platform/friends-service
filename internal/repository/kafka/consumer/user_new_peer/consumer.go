@@ -62,12 +62,6 @@ func (kc *KafkaConsumer) Listen() {
 			fmt.Println("NewUserProd.process: ", err)
 			continue
 		}
-
-		err = kc.storage.UpdateUserInvite(string(readMsg))
-
-		if err != nil {
-			fmt.Println("Not update DB: ", err)
-		}
 	}
 }
 

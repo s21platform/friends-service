@@ -20,7 +20,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	NewUserProd, err := notification_new_user.New(cfg)
+	NewUserProd, err := notification_new_user.New(cfg, dbRepo)
 
 	if err != nil {
 		log.Println("Error create producer: ", err)

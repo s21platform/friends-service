@@ -6,5 +6,4 @@ type ProdRepo interface {
 
 type Storage interface {
 	GetUUIDForEmail(email []byte) ([]string, error)
-	UpdateUserInvite(userInvite string) error
 }

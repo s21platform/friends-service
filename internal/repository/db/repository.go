@@ -220,8 +220,11 @@ func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
 	return res, nil
 }
 
-func (r *Repository) UpdateUserInvite(userInvite string) error {
-	_, err := r.connection.Exec("UPDATE user_invite SET is_closed=true WHERE invited=$1", userInvite)
+func (r *Repository) UpdateUserInvite(initiator, invited string) error {
+	_, err := r.connection.Exec("UPDATE user_invite SET is_closed=true WHERE initiator=$1 AND invited=$2",
+		initiator,
+		invited,
+	)
 
 	if err != nil {
 		return fmt.Errorf("r.connection.Exec UPDATE user_invite: %v", err)
