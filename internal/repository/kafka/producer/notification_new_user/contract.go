@@ -1,5 +1,5 @@
 package notification_new_user //nolint:revive,stylecheck
 
-type Storage interface {
+type DBRepo interface {
 	UpdateUserInvite(initiator, invited string) error
 }

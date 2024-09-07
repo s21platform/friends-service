@@ -4,6 +4,6 @@ type ProdRepo interface {
 	Process(email string, msgs []string) error
 }
 
-type Storage interface {
+type DBRepo interface {
 	GetUUIDForEmail(email []byte) ([]string, error)
 }

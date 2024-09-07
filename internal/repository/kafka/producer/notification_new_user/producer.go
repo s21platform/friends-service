@@ -11,10 +11,10 @@ import (
 
 type KafkaProducer struct {
 	producer *kafka.Writer
-	storage  Storage
+	dbR      DBRepo
 }
 
-func New(cfg *config.Config, storage Storage) (*KafkaProducer, error) {
+func New(cfg *config.Config, dbR DBRepo) (*KafkaProducer, error) {
 	if cfg.Kafka.Server == "" {
 		return nil, fmt.Errorf("kafka server address is not provided")
 	}
@@ -30,7 +30,7 @@ func New(cfg *config.Config, storage Storage) (*KafkaProducer, error) {
 		RequiredAcks: kafka.RequireAll,    // подтверждение о том что сообщение доставлено
 	}
 
-	return &KafkaProducer{producer: writer, storage: storage}, nil
+	return &KafkaProducer{producer: writer, dbR: dbR}, nil
 }
 
 func (kp *KafkaProducer) Close() error {
@@ -41,8 +41,10 @@ func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) e
 	jsonMsg := struct {
 		Email string `json:"email"`
 		UUID  string `json:"uuid"`
-	}{Email: email,
-		UUID: value}
+	}{
+		Email: email,
+		UUID:  value,
+	}
 
 	msg, err := json.Marshal(jsonMsg)
 
@@ -68,7 +70,7 @@ func (kp *KafkaProducer) Process(email string, msgs []string) error {
 			return fmt.Errorf("kp.sendMessage: %v", err)
 		}
 
-		err = kp.storage.UpdateUserInvite(val, email)
+		err = kp.dbR.UpdateUserInvite(val, email)
 
 		if err != nil {
 			return fmt.Errorf("kp.storage.UpdateUserInvite: %v", err)

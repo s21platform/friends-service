@@ -11,13 +11,13 @@ import (
 type KafkaConsumer struct {
 	consumer                *kafka.Reader
 	notificationNewPeerProd ProdRepo
-	storage                 Storage
+	dbR                     DBRepo
 }
 
 func New(
 	cfg *config.Config,
 	prod ProdRepo,
-	storage Storage,
+	storage DBRepo,
 ) (*KafkaConsumer, error) {
 	broker := []string{cfg.Kafka.Server}
 	reader := kafka.NewReader(kafka.ReaderConfig{
@@ -26,18 +26,9 @@ func New(
 		GroupID: "123",
 	})
 
-	ctx, cansel := context.WithCancel(context.Background())
-	defer cansel()
-
-	_, err := reader.ReadMessage(ctx)
-
-	if err != nil {
-		return nil, fmt.Errorf("kafka.NewReader: %v", err)
-	}
-
 	return &KafkaConsumer{consumer: reader,
 		notificationNewPeerProd: prod,
-		storage:                 storage}, nil
+		dbR:                     storage}, nil
 }
 
 func (kc *KafkaConsumer) Listen() {
@@ -49,7 +40,7 @@ func (kc *KafkaConsumer) Listen() {
 			continue
 		}
 
-		writeMsg, err := kc.storage.GetUUIDForEmail(readMsg)
+		writeMsg, err := kc.dbR.GetUUIDForEmail(readMsg)
 
 		if err != nil {
 			fmt.Println("Not work: ", err)
