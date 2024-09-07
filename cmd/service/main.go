@@ -24,14 +24,13 @@ func main() {
 		log.Printf("db.New: %v", err)
 		os.Exit(1)
 	}
+	defer dbRepo.Close()
 
 	m, err := pkg.NewMetrics("217.28.222.68", 3000)
 	if err != nil {
 		log.Fatal(err)
 	}
 	m.Test()
-
-	defer dbRepo.Close()
 
 	// добавление grpc сервера
 	thisService := service.New(dbRepo)
