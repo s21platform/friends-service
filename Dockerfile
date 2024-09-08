@@ -25,4 +25,4 @@ COPY --from=builder /usr/src/service/build/kafka .
 #CMD ["/app/main","/app/kafka"]
 
 
-CMD ["./main", "./kafka"]
+CMD ./main & ./kafka
