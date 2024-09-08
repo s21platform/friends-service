@@ -19,7 +19,7 @@ RUN apk add --no-cache gcompat
 # RUN chmod +x main
 
 # RUN ls -l /app/
-COPY --from=builder /usr/src/service/scripts ./scripts
+COPY --from=builder /usr/src/service ./scripts
 COPY --from=builder /usr/src/service/build/kafka .
 
 #CMD ["/app/main","/app/kafka"]
