@@ -24,6 +24,19 @@ func (s *Server) SetFriends(
 	return &friend_proto.SetFriendsOut{Success: true}, nil
 }
 
+func (s *Server) RemoveFriends(
+	ctx context.Context, in *friend_proto.RemoveFriendsIn,
+) (*friend_proto.RemoveFriendsOut, error) {
+	_ = ctx
+	res, err := s.dbR.RemoveFriends(in.Peer_1, in.Peer_2)
+
+	if err != nil || !res {
+		return nil, err
+	}
+
+	return &friend_proto.RemoveFriendsOut{Success: true}, err
+}
+
 func (s *Server) RemoveSubscribe(
 	ctx context.Context, in *friend_proto.RemoveSubscribeIn,
 ) (*friend_proto.RemoveSubscribeOut, error) {

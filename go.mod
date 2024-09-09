@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lib/pq v1.10.9
-	github.com/s21platform/friends-proto v0.0.5
+	github.com/s21platform/friends-proto v0.0.7
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/grpc v1.65.0

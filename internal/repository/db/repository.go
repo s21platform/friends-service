@@ -2,9 +2,10 @@ package db
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 
 	_ "github.com/lib/pq" // Импортируем данную библиотеку для работы с бд.
 	"github.com/s21platform/friends-service/internal/config"
@@ -52,6 +53,7 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 func (r *Repository) isRowFriendExist(peer1, peer2 string) (bool, error) {
 	var res []string
 	err := r.connection.Select(&res, "SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2)
+
 	if err == nil && len(res) != 0 {
 		return false, nil
 	} else if err != nil {
@@ -68,6 +70,19 @@ func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 	}
 
 	if _, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer1, peer2); err != nil {
+		return false, fmt.Errorf("r.connection.Exec: %v", err)
+	}
+
+	return true, nil
+}
+
+func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
+	res, err := r.isRowFriendExist(peer1, peer2)
+	if err != nil || res {
+		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
+	}
+
+	if _, err = r.connection.Exec("DELETE FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2); err != nil {
 		return false, fmt.Errorf("r.connection.Exec: %v", err)
 	}
 
@@ -97,7 +112,7 @@ func (r *Repository) isRowInviteExist(row1, row2 string) (bool, error) {
 		return false, nil
 	}
 
-	return true, nil
+	return true, err
 }
 
 func (r *Repository) SetInvitePeer(uuid, email string) error {
@@ -140,7 +155,8 @@ func New(cfg *config.Config) (*Repository, error) {
 func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
 	var res []string
 
-	err := r.connection.Select(&res, "SELECT initiator FROM user_invite WHERE invited = $1", string(email))
+	err := r.connection.Select(&res, "SELECT initiator FROM user_invite WHERE invited = $1 AND is_closed NOT true",
+		string(email))
 
 	if err != nil {
 		return nil, fmt.Errorf("r.connection.Select: %v", err)
