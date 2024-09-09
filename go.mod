@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lib/pq v1.10.9
-	github.com/s21platform/friends-proto v0.0.4
+	github.com/s21platform/friends-proto v0.0.5
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/grpc v1.65.0
@@ -17,6 +17,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
