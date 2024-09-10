@@ -33,20 +33,6 @@ func (m *MockDBRepo) EXPECT() *MockDBRepoMockRecorder {
 	return m.recorder
 }
 
-// GetInvitePeer mocks base method.
-func (m *MockDBRepo) GetInvitePeer(initiator, email string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetInvitePeer", initiator, email)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// GetInvitePeer indicates an expected call of GetInvitePeer.
-func (mr *MockDBRepoMockRecorder) GetInvitePeer(initiator, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInvitePeer", reflect.TypeOf((*MockDBRepo)(nil).GetInvitePeer), initiator, email)
-}
-
 // GetPeerFollows mocks base method.
 func (m *MockDBRepo) GetPeerFollows(initiator string) ([]string, error) {
 	m.ctrl.T.Helper()
@@ -77,6 +63,21 @@ func (mr *MockDBRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDBRepo)(nil).GetWhoFollowsPeer), initiator)
 }
 
+// RemoveFriends mocks base method.
+func (m *MockDBRepo) RemoveFriends(peer1, peer2 string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveFriends", peer1, peer2)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemoveFriends indicates an expected call of RemoveFriends.
+func (mr *MockDBRepoMockRecorder) RemoveFriends(peer1, peer2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveFriends", reflect.TypeOf((*MockDBRepo)(nil).RemoveFriends), peer1, peer2)
+}
+
 // RemoveSubscribe mocks base method.
 func (m *MockDBRepo) RemoveSubscribe(peer1, peer2 string) error {
 	m.ctrl.T.Helper()
@@ -104,4 +105,18 @@ func (m *MockDBRepo) SetFriend(peer1, peer2 string) (bool, error) {
 func (mr *MockDBRepoMockRecorder) SetFriend(peer1, peer2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFriend", reflect.TypeOf((*MockDBRepo)(nil).SetFriend), peer1, peer2)
+}
+
+// SetInvitePeer mocks base method.
+func (m *MockDBRepo) SetInvitePeer(initiator, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetInvitePeer", initiator, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetInvitePeer indicates an expected call of SetInvitePeer.
+func (mr *MockDBRepoMockRecorder) SetInvitePeer(initiator, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetInvitePeer", reflect.TypeOf((*MockDBRepo)(nil).SetInvitePeer), initiator, email)
 }

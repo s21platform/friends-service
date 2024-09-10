@@ -24,6 +24,19 @@ func (s *Server) SetFriends(
 	return &friend_proto.SetFriendsOut{Success: true}, nil
 }
 
+func (s *Server) RemoveFriends(
+	ctx context.Context, in *friend_proto.RemoveFriendsIn,
+) (*friend_proto.RemoveFriendsOut, error) {
+	_ = ctx
+	res, err := s.dbR.RemoveFriends(in.Peer_1, in.Peer_2)
+
+	if err != nil || !res {
+		return nil, err
+	}
+
+	return &friend_proto.RemoveFriendsOut{Success: true}, err
+}
+
 func (s *Server) RemoveSubscribe(
 	ctx context.Context, in *friend_proto.RemoveSubscribeIn,
 ) (*friend_proto.RemoveSubscribeOut, error) {
@@ -75,11 +88,11 @@ func (s *Server) GetWhoFollowPeer(
 	return &friend_proto.GetWhoFollowPeerOut{Subscribers: peers}, nil
 }
 
-func (s *Server) GetInvitePeer(
-	ctx context.Context, in *friend_proto.GetInvitePeerIn,
-) (*friend_proto.GetInvitePeerOut, error) {
+func (s *Server) SetInvitePeer(
+	ctx context.Context, in *friend_proto.SetInvitePeerIn,
+) (*friend_proto.SetInvitePeerOut, error) {
 	_ = ctx
-	err := s.dbR.GetInvitePeer(in.Uuid, in.Email)
+	err := s.dbR.SetInvitePeer(in.Uuid, in.Email)
 
-	return &friend_proto.GetInvitePeerOut{}, err
+	return &friend_proto.SetInvitePeerOut{}, err
 }
