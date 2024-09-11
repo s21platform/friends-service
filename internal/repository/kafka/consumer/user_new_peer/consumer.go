@@ -3,7 +3,6 @@ package user_new_peer //nolint:revive,stylecheck
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
 	"log"
@@ -42,21 +41,21 @@ func (kc *KafkaConsumer) Listen() {
 		readMsg, err := kc.readMessage()
 
 		if err != nil {
-			fmt.Println("kc.process() ", err)
+			log.Println("kc.process() ", err)
 			continue
 		}
 
 		writeMsg, err := kc.dbR.GetUUIDForEmail(readMsg.Email)
 
 		if err != nil {
-			fmt.Println("Not work: ", err)
+			log.Println("Not work: ", err)
 			continue
 		}
 
 		err = kc.notificationNewPeerProd.Process(readMsg.Email, writeMsg)
 
 		if err != nil {
-			fmt.Println("NewUserProd.process: ", err)
+			log.Println("NewUserProd.process: ", err)
 			continue
 		}
 	}
