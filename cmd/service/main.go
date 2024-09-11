@@ -8,7 +8,7 @@ import (
 
 	"github.com/s21platform/friends-service/internal/rpc/user"
 
-	friend_proto "github.com/s21platform/friends-proto/friends-proto"
+	friends "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
 	db "github.com/s21platform/friends-service/internal/repository/db"
 	"github.com/s21platform/friends-service/internal/service"
@@ -31,7 +31,7 @@ func main() {
 	thisService := service.New(dbRepo)
 
 	s := grpc.NewServer()
-	friend_proto.RegisterFriendsServiceServer(s, thisService)
+	friends.RegisterFriendsServiceServer(s, thisService)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
 	if err != nil {

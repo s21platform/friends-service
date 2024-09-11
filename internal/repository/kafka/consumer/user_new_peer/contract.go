@@ -5,5 +5,5 @@ type ProdRepo interface {
 }
 
 type DBRepo interface {
-	GetUUIDForEmail(email []byte) ([]string, error)
+	GetUUIDForEmail(email string) ([]string, error)
 }

@@ -152,11 +152,11 @@ func New(cfg *config.Config) (*Repository, error) {
 	return nil, err
 }
 
-func (r *Repository) GetUUIDForEmail(email []byte) ([]string, error) {
+func (r *Repository) GetUUIDForEmail(email string) ([]string, error) {
 	var res []string
 
 	err := r.connection.Select(&res, "SELECT initiator FROM user_invite WHERE invited = $1 AND is_closed != true",
-		string(email))
+		email)
 
 	if err != nil {
 		return nil, fmt.Errorf("r.connection.Select: %v", err)
