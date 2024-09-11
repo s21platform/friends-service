@@ -3,9 +3,9 @@ package user_new_peer //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
+	"log"
 )
 
 type KafkaConsumer struct {
@@ -62,6 +62,8 @@ func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
 	if err != nil {
 		return kafka.Message{}, fmt.Errorf("kc.ReadMessage: %v", err)
 	}
+
+	log.Println("read topic: ", msg.Value)
 
 	return msg, nil
 }
