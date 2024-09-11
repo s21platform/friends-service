@@ -2,6 +2,7 @@ package user_new_peer //nolint:revive,stylecheck
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
@@ -12,6 +13,11 @@ type KafkaConsumer struct {
 	consumer                *kafka.Reader
 	notificationNewPeerProd ProdRepo
 	dbR                     DBRepo
+}
+
+type FriendRegisterRsvMap struct {
+	Email string `json:"email"`
+	UUID  string `json:"uuid"`
 }
 
 func New(
@@ -33,21 +39,21 @@ func New(
 
 func (kc *KafkaConsumer) Listen() {
 	for {
-		readMsg, err := kc.process()
+		readMsg, err := kc.readMessage()
 
 		if err != nil {
 			fmt.Println("kc.process() ", err)
 			continue
 		}
 
-		writeMsg, err := kc.dbR.GetUUIDForEmail(readMsg)
+		writeMsg, err := kc.dbR.GetUUIDForEmail(readMsg.Email)
 
 		if err != nil {
 			fmt.Println("Not work: ", err)
 			continue
 		}
 
-		err = kc.notificationNewPeerProd.Process(string(readMsg), writeMsg)
+		err = kc.notificationNewPeerProd.Process(readMsg.Email, writeMsg)
 
 		if err != nil {
 			fmt.Println("NewUserProd.process: ", err)
@@ -56,24 +62,19 @@ func (kc *KafkaConsumer) Listen() {
 	}
 }
 
-func (kc *KafkaConsumer) readMessage() (kafka.Message, error) {
-	msg, err := kc.consumer.ReadMessage(context.Background())
-
+func (kc *KafkaConsumer) readMessage() (FriendRegisterRsvMap, error) {
+	var Friend FriendRegisterRsvMap
+	msgJson, err := kc.consumer.ReadMessage(context.Background())
 	if err != nil {
-		return kafka.Message{}, fmt.Errorf("kc.ReadMessage: %v", err)
+		return Friend, err
 	}
 
-	log.Println("read topic: ", msg.Value)
-
-	return msg, nil
-}
-
-func (kc *KafkaConsumer) process() ([]byte, error) {
-	msg, err := kc.readMessage()
-
+	err = json.Unmarshal(msgJson.Value, &Friend)
 	if err != nil {
-		return nil, fmt.Errorf("kc.readMessage: %v", err)
+		return Friend, err
 	}
 
-	return msg.Value, nil
+	log.Println("read from topic (email):", Friend.Email)
+
+	return Friend, nil
 }
