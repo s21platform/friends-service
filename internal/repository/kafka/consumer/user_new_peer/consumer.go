@@ -64,12 +64,13 @@ func (kc *KafkaConsumer) Listen() {
 
 func (kc *KafkaConsumer) readMessage() (FriendRegisterRsvMap, error) {
 	var Friend FriendRegisterRsvMap
-	msgJson, err := kc.consumer.ReadMessage(context.Background())
+	msgJSON, err := kc.consumer.ReadMessage(context.Background())
+
 	if err != nil {
 		return Friend, err
 	}
 
-	err = json.Unmarshal(msgJson.Value, &Friend)
+	err = json.Unmarshal(msgJSON.Value, &Friend)
 	if err != nil {
 		return Friend, err
 	}
