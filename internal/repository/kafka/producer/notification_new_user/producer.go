@@ -62,7 +62,7 @@ func (kp *KafkaProducer) sendMessage(ctx context.Context, email, value string) e
 	return nil
 }
 
-func (kp *KafkaProducer) Process(email string, msgs []string) error {
+func (kp *KafkaProducer) Process(email, uuid string, msgs []string) error {
 	for _, val := range msgs {
 		err := kp.sendMessage(context.Background(), email, val)
 
@@ -74,6 +74,12 @@ func (kp *KafkaProducer) Process(email string, msgs []string) error {
 
 		if err != nil {
 			return fmt.Errorf("kp.storage.UpdateUserInvite: %v", err)
+		}
+
+		_, err = kp.dbR.SetFriend(uuid, val)
+
+		if err != nil {
+			return fmt.Errorf("kp.dbR.SetFriend: %v", err)
 		}
 	}
 
