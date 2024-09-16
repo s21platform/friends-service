@@ -3,9 +3,10 @@ package user_new_peer //nolint:revive,stylecheck
 import (
 	"context"
 	"encoding/json"
+	"log"
+
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
-	"log"
 )
 
 type KafkaConsumer struct {
@@ -52,7 +53,7 @@ func (kc *KafkaConsumer) Listen() {
 			continue
 		}
 
-		err = kc.notificationNewPeerProd.Process(readMsg.Email, writeMsg)
+		err = kc.notificationNewPeerProd.Process(readMsg.Email, readMsg.UUID, writeMsg)
 
 		if err != nil {
 			log.Println("NewUserProd.process: ", err)
