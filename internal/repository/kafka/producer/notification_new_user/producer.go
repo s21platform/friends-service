@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/segmentio/kafka-go"
@@ -67,19 +68,21 @@ func (kp *KafkaProducer) Process(email, uuid string, msgs []string) error {
 		err := kp.sendMessage(context.Background(), email, val)
 
 		if err != nil {
-			return fmt.Errorf("kp.sendMessage: %v", err)
+			log.Printf("kp.sendMessage: %v", err)
+			continue
 		}
 
 		err = kp.dbR.UpdateUserInvite(val, email)
 
 		if err != nil {
-			return fmt.Errorf("kp.storage.UpdateUserInvite: %v", err)
+			log.Printf("kp.storage.UpdateUserInvite: %v", err)
+			continue
 		}
 
 		_, err = kp.dbR.SetFriend(uuid, val)
 
 		if err != nil {
-			return fmt.Errorf("kp.dbR.SetFriend: %v", err)
+			log.Printf("kp.dbR.SetFriend: %v", err)
 		}
 	}
 
