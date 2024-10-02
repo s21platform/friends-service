@@ -1,6 +1,8 @@
 module github.com/s21platform/friends-service
 
-go 1.22.5
+go 1.22.7
+
+toolchain go1.22.8
 
 require (
 	github.com/docker/distribution v2.8.2+incompatible
@@ -8,9 +10,10 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
-	github.com/s21platform/friends-proto v0.0.7
+	github.com/s21platform/friends-proto v0.0.8
+	github.com/s21platform/kafka-lib v0.0.2
+	github.com/s21platform/metrics-lib v0.0.6
 	github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd
-	github.com/segmentio/kafka-go v0.4.47
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/grpc v1.65.0
 )
@@ -21,9 +24,11 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
+	github.com/marpaia/graphite-golang v0.0.0-20190519024811-caf161d2c2b1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/segmentio/kafka-go v0.4.47 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect

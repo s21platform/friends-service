@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 
-	notificationnewuser "github.com/s21platform/friends-service/internal/repository/kafka/producer/notification_new_user"
+	"github.com/s21platform/friends-service/internal/databus/new_friend"
+	kafkalib "github.com/s21platform/kafka-lib"
+	"github.com/s21platform/metrics-lib/pkg"
 
 	"github.com/s21platform/friends-service/internal/config"
 	"github.com/s21platform/friends-service/internal/repository/db"
-	usernewpeer "github.com/s21platform/friends-service/internal/repository/kafka/consumer/user_new_peer"
 )
 
 func main() {
@@ -18,23 +20,27 @@ func main() {
 		log.Fatalf("db.New: %v", err)
 	}
 
-	NewUserProd, err := notificationnewuser.New(cfg, dbRepo)
-
+	metrics, err := pkg.NewMetrics(cfg.Metrics.Host, cfg.Metrics.Port, "friends", cfg.Platform.Env)
 	if err != nil {
-		_ = NewUserProd.Close()
-
-		log.Fatalf("Error create producer: %v", err)
+		log.Fatalf("faild to connect graphite: %v", err)
 	}
 
-	defer NewUserProd.Close()
+	ctx := context.WithValue(context.Background(), config.KeyMetrics, metrics)
 
-	NewUserCons, err := usernewpeer.New(cfg, NewUserProd, dbRepo)
-
+	// Consumers
+	newFriendConsumer, err := kafkalib.NewConsumer(cfg.Kafka.Server, cfg.Kafka.TopicNewFriend, metrics)
 	if err != nil {
-		_ = NewUserProd.Close()
-
-		log.Fatalf("Error create user_new_peer: %v", err) //nolint:gocritic
+		log.Fatalf("failed to create consumer: %v", err)
 	}
 
-	NewUserCons.Listen()
+	// Producers
+	notificationNewFriendProducer := kafkalib.NewProducer(cfg.Kafka.Server, cfg.Kafka.NotificationNewFriendTopic)
+
+	// Kafka Handlers
+	NewFriendHandler := new_friend.New(dbRepo, notificationNewFriendProducer)
+
+	// Register Handlers
+	newFriendConsumer.RegisterHandler(ctx, NewFriendHandler.Handler)
+
+	<-ctx.Done()
 }
