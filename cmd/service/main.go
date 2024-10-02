@@ -24,7 +24,6 @@ func main() {
 		log.Printf("db.New: %v", err)
 		os.Exit(1)
 	}
-
 	defer dbRepo.Close()
 
 	// добавление grpc сервера
