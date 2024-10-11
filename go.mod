@@ -9,7 +9,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
 	github.com/s21platform/friends-proto v0.0.8
-	github.com/s21platform/kafka-lib v0.0.3
+	github.com/s21platform/kafka-lib v0.0.4
 	github.com/s21platform/metrics-lib v0.0.6
 	github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd
 	github.com/stretchr/testify v1.8.3
