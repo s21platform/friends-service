@@ -1,8 +1,6 @@
 module github.com/s21platform/friends-service
 
-go 1.22.7
-
-toolchain go1.22.8
+go 1.22.8
 
 require (
 	github.com/docker/distribution v2.8.2+incompatible
@@ -11,7 +9,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
 	github.com/s21platform/friends-proto v0.0.8
-	github.com/s21platform/kafka-lib v0.0.2
+	github.com/s21platform/kafka-lib v0.0.3
 	github.com/s21platform/metrics-lib v0.0.6
 	github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd
 	github.com/stretchr/testify v1.8.3
