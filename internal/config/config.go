@@ -6,11 +6,17 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+type key string
+
+const KeyMetrics = key("metrics")
+
 type Config struct {
 	Service  Service
 	Postgres ReadEnvBD
 	Kafka    Kafka
 	User     User
+	Metrics  Metrics
+	Platform Platform
 }
 
 type Service struct {
@@ -27,16 +33,25 @@ type ReadEnvBD struct {
 }
 
 type Kafka struct {
-	TopicForReading string `env:"USER_FRIENDS_REGISTER"`
-	TopicForWriting string `env:"FRIENDS_EMAIL_INVITE"`
-	Server          string `env:"KAFKA_SERVER"`
-	GroupID         string `env:"KAFKA_GROUP_ID" envDefault:"test"`
-	AutoOffset      string `env:"KAFKA_OFFSET" envDefault:"latest"`
+	TopicNewFriend             string `env:"USER_FRIENDS_REGISTER"`
+	NotificationNewFriendTopic string `env:"FRIENDS_EMAIL_INVITE"`
+	Server                     string `env:"KAFKA_SERVER"`
+	GroupID                    string `env:"KAFKA_GROUP_ID" envDefault:"test"`
+	AutoOffset                 string `env:"KAFKA_OFFSET" envDefault:"latest"`
 }
 
 type User struct {
 	Host string `env:"USER_SERVICE_HOST"`
 	Port string `env:"USER_SERVICE_PORT"`
+}
+
+type Metrics struct {
+	Host string `env:"GRAFANA_HOST"`
+	Port int    `env:"GRAFANA_PORT"`
+}
+
+type Platform struct {
+	Env string `env:"ENV"`
 }
 
 func MustLoad() *Config {
