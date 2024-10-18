@@ -6,6 +6,9 @@ import (
 	"net"
 	"os"
 
+	"github.com/s21platform/friends-service/internal/infra"
+	"github.com/s21platform/metrics-lib/pkg"
+
 	"github.com/s21platform/friends-service/internal/rpc/user"
 
 	friends "github.com/s21platform/friends-proto/friends-proto"
@@ -26,11 +29,23 @@ func main() {
 	}
 	defer dbRepo.Close()
 
+	metrics, err := pkg.NewMetrics(cfg.Metrics.Host, cfg.Metrics.Port, "friends", cfg.Platform.Env)
+	if err != nil {
+		log.Fatalln("fail to create metrics:", err)
+	}
+
 	// добавление grpc сервера
 	thisService := service.New(dbRepo)
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			infra.UnaryInterceptor,
+			infra.MetricsInterceptor(metrics),
+		),
+	)
 	friends.RegisterFriendsServiceServer(s, thisService)
+
+	log.Println("start server", cfg.Service.Port)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
 	if err != nil {
