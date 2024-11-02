@@ -183,13 +183,13 @@ func (r *Repository) UpdateUserInvite(initiator, invited string) error {
 func (r *Repository) GetCountFriends(uuid string) (int64, int64, error) {
 	var subscription, subscribers int64
 
-	err := r.connection.Select(&subscription, "SELECT count(initiator) FROM friends WHERE user_id = $1)", uuid)
+	err := r.connection.Select(&subscription, "SELECT count(initiator) FROM friends WHERE user_id = $1", uuid)
 
 	if err != nil {
 		return 0, 0, fmt.Errorf("r.connection.Select: %v", err)
 	}
 
-	err = r.connection.Select(&subscription, "SELECT count(user_id) FROM friends WHERE initiator = $1)", uuid)
+	err = r.connection.Select(&subscription, "SELECT count(user_id) FROM friends WHERE initiator = $1", uuid)
 
 	if err != nil {
 		return 0, 0, fmt.Errorf("r.connection.Select: %v", err)
