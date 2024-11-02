@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
+	_ "google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
 )
@@ -94,5 +97,25 @@ func (s *Server) SetInvitePeer(
 	_ = ctx
 	err := s.dbR.SetInvitePeer(in.Uuid, in.Email)
 
+	// или тут добавить USER_INVITE_NOTIFICATION
+
 	return &friend_proto.SetInvitePeerOut{}, err
+}
+
+func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.Empty) (*friend_proto.GetCountFriendsOut, error) {
+	_ = ctx
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("uuid not found in metadata")
+	}
+	userID := md["uuid"]
+	subscription, subscribers, err := s.dbR.GetCountFriends(userID[0])
+	if err != nil {
+		return nil, err
+	}
+
+	return &friend_proto.GetCountFriendsOut{
+		Subscription: subscription,
+		Subscribers:  subscribers,
+	}, nil
 }
