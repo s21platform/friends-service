@@ -2,7 +2,7 @@
 // Source: contract.go
 
 // Package service is a generated GoMock package.
-package service_test
+package service
 
 import (
 	reflect "reflect"
@@ -31,6 +31,22 @@ func NewMockDBRepo(ctrl *gomock.Controller) *MockDBRepo {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDBRepo) EXPECT() *MockDBRepoMockRecorder {
 	return m.recorder
+}
+
+// GetCountFriends mocks base method.
+func (m *MockDBRepo) GetCountFriends(uuid string) (int64, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCountFriends", uuid)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetCountFriends indicates an expected call of GetCountFriends.
+func (mr *MockDBRepoMockRecorder) GetCountFriends(uuid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCountFriends", reflect.TypeOf((*MockDBRepo)(nil).GetCountFriends), uuid)
 }
 
 // GetPeerFollows mocks base method.
