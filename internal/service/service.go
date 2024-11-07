@@ -103,7 +103,7 @@ func (s *Server) SetInvitePeer(
 	return &friend_proto.SetInvitePeerOut{}, err
 }
 
-func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.Empty) (*friend_proto.GetCountFriendsOut, error) {
+func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.EmptyFriends) (*friend_proto.GetCountFriendsOut, error) {
 	_ = ctx
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
