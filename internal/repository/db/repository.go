@@ -195,5 +195,6 @@ func (r *Repository) GetCountFriends(uuid string) (int64, int64, error) {
 		return 0, 0, fmt.Errorf("subscribers strconv.ParseInt: %v", err)
 	}
 
+	log.Println("subscription, subscribers: ", subscription, subscribers)
 	return subscription, subscribers, nil
 }
