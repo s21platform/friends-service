@@ -19,7 +19,12 @@ func (s *Server) SetFriends(
 	ctx context.Context, in *friend_proto.SetFriendsIn,
 ) (*friend_proto.SetFriendsOut, error) {
 	_ = ctx
-	res, err := s.dbR.SetFriend(in.Peer_1, in.Peer_2)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("uuid not found in metadata")
+	}
+	userID := md["uuid"]
+	res, err := s.dbR.SetFriend(userID[0], in.Peer)
 
 	if err != nil || !res {
 		return nil, err
@@ -32,7 +37,12 @@ func (s *Server) RemoveFriends(
 	ctx context.Context, in *friend_proto.RemoveFriendsIn,
 ) (*friend_proto.RemoveFriendsOut, error) {
 	_ = ctx
-	res, err := s.dbR.RemoveFriends(in.Peer_1, in.Peer_2)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("uuid not found in metadata")
+	}
+	userID := md["uuid"]
+	res, err := s.dbR.RemoveFriends(userID[0], in.Peer)
 
 	if err != nil || !res {
 		return nil, err
@@ -45,7 +55,12 @@ func (s *Server) RemoveSubscribe(
 	ctx context.Context, in *friend_proto.RemoveSubscribeIn,
 ) (*friend_proto.RemoveSubscribeOut, error) {
 	_ = ctx
-	err := s.dbR.RemoveSubscribe(in.Peer_1, in.Peer_2)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("uuid not found in metadata")
+	}
+	userID := md["uuid"]
+	err := s.dbR.RemoveSubscribe(userID[0], in.Peer)
 
 	return &friend_proto.RemoveSubscribeOut{}, err
 }
@@ -96,7 +111,12 @@ func (s *Server) SetInvitePeer(
 	ctx context.Context, in *friend_proto.SetInvitePeerIn,
 ) (*friend_proto.SetInvitePeerOut, error) {
 	_ = ctx
-	err := s.dbR.SetInvitePeer(in.Uuid, in.Email)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("uuid not found in metadata")
+	}
+	userID := md["uuid"]
+	err := s.dbR.SetInvitePeer(userID[0], in.Email)
 
 	// или тут добавить USER_INVITE_NOTIFICATION
 
