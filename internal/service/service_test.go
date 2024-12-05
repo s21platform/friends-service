@@ -294,6 +294,7 @@ func TestServer_GetCountFriends(t *testing.T) {
 	})
 	t.Run("should_no_uuid", func(t *testing.T) {
 		peerUUID := ""
+		ctx = context.WithValue(ctx, config.KeyUUID, peerUUID)
 		var subscription int64 = 0
 		var subscribers int64 = 0
 		repoErr := errors.New("test")
