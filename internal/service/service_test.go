@@ -105,7 +105,7 @@ func TestServer_SetFriends(t *testing.T) {
 		mockDBRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(true, nil)
 
 		s := New(mockDBRepo)
-		res, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		res, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer: peer2.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.SetFriendsOut{Success: true})
 	})
@@ -117,7 +117,7 @@ func TestServer_SetFriends(t *testing.T) {
 		mockDBRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(false, nil)
 
 		s := New(mockDBRepo)
-		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer: peer2.String()})
 		assert.NoError(t, err)
 	})
 
@@ -129,7 +129,7 @@ func TestServer_SetFriends(t *testing.T) {
 		mockDBRepo.EXPECT().SetFriend(peer1.String(), peer2.String()).Return(false, repoErr)
 
 		s := New(mockDBRepo)
-		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		_, err := s.SetFriends(ctx, &friends_proto.SetFriendsIn{Peer: peer2.String()})
 		assert.Error(t, err, repoErr)
 	})
 }
@@ -151,7 +151,7 @@ func TestServer_RemoveFriends(t *testing.T) {
 		mockDBRepo.EXPECT().RemoveFriends(peer1.String(), peer2.String()).Return(true, nil)
 
 		s := New(mockDBRepo)
-		res, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		res, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer: peer2.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.RemoveFriendsOut{Success: true})
 	})
@@ -163,7 +163,7 @@ func TestServer_RemoveFriends(t *testing.T) {
 		mockDBRepo.EXPECT().RemoveFriends(peer1.String(), peer2.String()).Return(false, nil)
 
 		s := New(mockDBRepo)
-		_, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		_, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer: peer2.String()})
 		assert.NoError(t, err)
 	})
 
@@ -175,7 +175,7 @@ func TestServer_RemoveFriends(t *testing.T) {
 		mockDBRepo.EXPECT().RemoveFriends(peer1.String(), peer2.String()).Return(false, repoErr)
 
 		s := New(mockDBRepo)
-		_, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		_, err := s.RemoveFriends(ctx, &friends_proto.RemoveFriendsIn{Peer: peer2.String()})
 		assert.Error(t, err, repoErr)
 	})
 }
@@ -196,7 +196,7 @@ func TestServer_RemoveSubscribe(t *testing.T) {
 
 		mockDBRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(nil)
 		s := New(mockDBRepo)
-		res, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		res, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer: peer2.String()})
 		assert.NoError(t, err)
 		assert.Equal(t, res, &friends_proto.RemoveSubscribeOut{})
 	})
@@ -209,7 +209,7 @@ func TestServer_RemoveSubscribe(t *testing.T) {
 		mockDBRepo.EXPECT().RemoveSubscribe(peer1.String(), peer2.String()).Return(repoErr)
 
 		s := New(mockDBRepo)
-		_, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer_1: peer1.String(), Peer_2: peer2.String()})
+		_, err := s.RemoveSubscribe(ctx, &friends_proto.RemoveSubscribeIn{Peer: peer2.String()})
 		assert.Error(t, err, repoErr)
 	})
 }
@@ -230,7 +230,7 @@ func TestServer_InvitePeer(t *testing.T) {
 
 		mockDBRepo.EXPECT().SetInvitePeer(peerUUID.String(), email).Return(nil)
 		s := New(mockDBRepo)
-		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Uuid: peerUUID.String(), Email: email})
+		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Email: email})
 		assert.NoError(t, err)
 	})
 
@@ -241,7 +241,7 @@ func TestServer_InvitePeer(t *testing.T) {
 
 		mockDBRepo.EXPECT().SetInvitePeer(peerUUID.String(), email).Return(repoErr)
 		s := New(mockDBRepo)
-		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Uuid: peerUUID.String(), Email: email})
+		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Email: email})
 		assert.Error(t, err, repoErr)
 	})
 
@@ -252,7 +252,7 @@ func TestServer_InvitePeer(t *testing.T) {
 
 		mockDBRepo.EXPECT().SetInvitePeer(peerUUID, email).Return(repoErr)
 		s := New(mockDBRepo)
-		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Uuid: peerUUID, Email: email})
+		_, err := s.SetInvitePeer(ctx, &friends_proto.SetInvitePeerIn{Email: email})
 		assert.Error(t, err, repoErr)
 	})
 }
