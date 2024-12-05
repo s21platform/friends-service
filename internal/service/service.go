@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	_ "google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
+	"github.com/s21platform/friends-service/internal/config"
 
 	friend_proto "github.com/s21platform/friends-proto/friends-proto"
+	_ "google.golang.org/grpc"
 )
 
 type Server struct {
@@ -18,13 +18,11 @@ type Server struct {
 func (s *Server) SetFriends(
 	ctx context.Context, in *friend_proto.SetFriendsIn,
 ) (*friend_proto.SetFriendsOut, error) {
-	_ = ctx
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, fmt.Errorf("uuid not found in metadata")
+	userID := ctx.Value(config.KeyUUID)
+	if userID == nil {
+		return nil, fmt.Errorf("uuid not found in context")
 	}
-	userID := md["uuid"]
-	res, err := s.dbR.SetFriend(userID[0], in.Peer)
+	res, err := s.dbR.SetFriend(userID.(string), in.Peer)
 
 	if err != nil || !res {
 		return nil, err
@@ -36,13 +34,11 @@ func (s *Server) SetFriends(
 func (s *Server) RemoveFriends(
 	ctx context.Context, in *friend_proto.RemoveFriendsIn,
 ) (*friend_proto.RemoveFriendsOut, error) {
-	_ = ctx
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, fmt.Errorf("uuid not found in metadata")
+	userID := ctx.Value(config.KeyUUID)
+	if userID == nil {
+		return nil, fmt.Errorf("uuid not found in context")
 	}
-	userID := md["uuid"]
-	res, err := s.dbR.RemoveFriends(userID[0], in.Peer)
+	res, err := s.dbR.RemoveFriends(userID.(string), in.Peer)
 
 	if err != nil || !res {
 		return nil, err
@@ -54,13 +50,11 @@ func (s *Server) RemoveFriends(
 func (s *Server) RemoveSubscribe(
 	ctx context.Context, in *friend_proto.RemoveSubscribeIn,
 ) (*friend_proto.RemoveSubscribeOut, error) {
-	_ = ctx
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, fmt.Errorf("uuid not found in metadata")
+	userID := ctx.Value(config.KeyUUID)
+	if userID == nil {
+		return nil, fmt.Errorf("uuid not found in context")
 	}
-	userID := md["uuid"]
-	err := s.dbR.RemoveSubscribe(userID[0], in.Peer)
+	err := s.dbR.RemoveSubscribe(userID.(string), in.Peer)
 
 	return &friend_proto.RemoveSubscribeOut{}, err
 }
@@ -110,13 +104,11 @@ func (s *Server) GetWhoFollowPeer(
 func (s *Server) SetInvitePeer(
 	ctx context.Context, in *friend_proto.SetInvitePeerIn,
 ) (*friend_proto.SetInvitePeerOut, error) {
-	_ = ctx
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, fmt.Errorf("uuid not found in metadata")
+	userID := ctx.Value(config.KeyUUID)
+	if userID == nil {
+		return nil, fmt.Errorf("uuid not found in context")
 	}
-	userID := md["uuid"]
-	err := s.dbR.SetInvitePeer(userID[0], in.Email)
+	err := s.dbR.SetInvitePeer(userID.(string), in.Email)
 
 	// или тут добавить USER_INVITE_NOTIFICATION
 
@@ -124,13 +116,11 @@ func (s *Server) SetInvitePeer(
 }
 
 func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.EmptyFriends) (*friend_proto.GetCountFriendsOut, error) {
-	_ = ctx
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, fmt.Errorf("uuid not found in metadata")
+	userID := ctx.Value(config.KeyUUID)
+	if userID == nil {
+		return nil, fmt.Errorf("uuid not found in context")
 	}
-	userID := md["uuid"]
-	subscription, subscribers, err := s.dbR.GetCountFriends(userID[0])
+	subscription, subscribers, err := s.dbR.GetCountFriends(userID.(string))
 	if err != nil {
 		return nil, err
 	}
