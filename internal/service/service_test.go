@@ -292,4 +292,17 @@ func TestServer_GetCountFriends(t *testing.T) {
 		assert.Equal(t, subscription, res.Subscription)
 		assert.Equal(t, subscribers, res.Subscribers)
 	})
+	t.Run("should_no_uuid", func(t *testing.T) {
+		peerUUID := ""
+		var subscription int64 = 0
+		var subscribers int64 = 0
+		repoErr := errors.New("test")
+
+		mockDBRepo.EXPECT().GetCountFriends(peerUUID).Return(subscription, subscribers, repoErr)
+
+		s := New(mockDBRepo)
+
+		_, err := s.GetCountFriends(ctx, &friends_proto.EmptyFriends{})
+		assert.Error(t, err, repoErr)
+	})
 }
