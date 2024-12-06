@@ -116,8 +116,9 @@ func (s *Server) SetInvitePeer(
 }
 
 func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.EmptyFriends) (*friend_proto.GetCountFriendsOut, error) {
-	userID := ctx.Value(config.KeyUUID).(string)
-	if userID == "" {
+	userIDValue := ctx.Value(config.KeyUUID)
+	userID, ok := userIDValue.(string)
+	if !ok || userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
 	subscription, subscribers, err := s.dbR.GetCountFriends(userID)

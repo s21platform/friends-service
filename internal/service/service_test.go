@@ -272,17 +272,17 @@ func TestServer_InvitePeer(t *testing.T) {
 
 func TestServer_GetCountFriends(t *testing.T) {
 	t.Parallel()
-	ctx := context.Background()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	mockDBRepo := NewMockDBRepo(ctrl)
 
 	t.Run("should_ok_with_uuid", func(t *testing.T) {
+		ctx := context.Background()
 		peerUUID := uuid.Generate().String()
 		ctx = context.WithValue(ctx, config.KeyUUID, peerUUID)
 		var subscription int64 = 0
 		var subscribers int64 = 0
 
+		mockDBRepo := NewMockDBRepo(ctrl)
 		mockDBRepo.EXPECT().GetCountFriends(peerUUID).Return(subscription, subscribers, nil)
 
 		s := New(mockDBRepo)
@@ -292,18 +292,18 @@ func TestServer_GetCountFriends(t *testing.T) {
 		assert.Equal(t, subscription, res.Subscription)
 		assert.Equal(t, subscribers, res.Subscribers)
 	})
-	t.Run("should_no_uuid", func(t *testing.T) {
-		peerUUID := ""
-		ctx = context.WithValue(ctx, config.KeyUUID, peerUUID)
-		var subscription int64 = 0
-		var subscribers int64 = 0
-		repoErr := errors.New("test")
 
-		mockDBRepo.EXPECT().GetCountFriends(peerUUID).Return(subscription, subscribers, repoErr)
+	t.Run("should_no_uuid", func(t *testing.T) {
+		ctx := context.Background()
+		mockDBRepo := NewMockDBRepo(ctrl)
+
+		mockDBRepo.EXPECT().GetCountFriends(gomock.Any()).Times(0)
 
 		s := New(mockDBRepo)
 
 		_, err := s.GetCountFriends(ctx, &friends_proto.EmptyFriends{})
-		assert.Error(t, err, repoErr)
+
+		assert.Error(t, err)
+		assert.Equal(t, "uuid not found in context", err.Error())
 	})
 }
