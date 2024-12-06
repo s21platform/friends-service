@@ -34,11 +34,11 @@ func (s *Server) SetFriends(
 func (s *Server) RemoveFriends(
 	ctx context.Context, in *friend_proto.RemoveFriendsIn,
 ) (*friend_proto.RemoveFriendsOut, error) {
-	userID := ctx.Value(config.KeyUUID)
-	if userID == nil {
+	userID := ctx.Value(config.KeyUUID).(string)
+	if userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
-	res, err := s.dbR.RemoveFriends(userID.(string), in.Peer)
+	res, err := s.dbR.RemoveFriends(userID, in.Peer)
 
 	if err != nil || !res {
 		return nil, err
@@ -50,11 +50,11 @@ func (s *Server) RemoveFriends(
 func (s *Server) RemoveSubscribe(
 	ctx context.Context, in *friend_proto.RemoveSubscribeIn,
 ) (*friend_proto.RemoveSubscribeOut, error) {
-	userID := ctx.Value(config.KeyUUID)
-	if userID == nil {
+	userID := ctx.Value(config.KeyUUID).(string)
+	if userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
-	err := s.dbR.RemoveSubscribe(userID.(string), in.Peer)
+	err := s.dbR.RemoveSubscribe(userID, in.Peer)
 
 	return &friend_proto.RemoveSubscribeOut{}, err
 }
@@ -104,11 +104,11 @@ func (s *Server) GetWhoFollowPeer(
 func (s *Server) SetInvitePeer(
 	ctx context.Context, in *friend_proto.SetInvitePeerIn,
 ) (*friend_proto.SetInvitePeerOut, error) {
-	userID := ctx.Value(config.KeyUUID)
-	if userID == nil {
+	userID := ctx.Value(config.KeyUUID).(string)
+	if userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
-	err := s.dbR.SetInvitePeer(userID.(string), in.Email)
+	err := s.dbR.SetInvitePeer(userID, in.Email)
 
 	// или тут добавить USER_INVITE_NOTIFICATION
 
@@ -116,11 +116,11 @@ func (s *Server) SetInvitePeer(
 }
 
 func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.EmptyFriends) (*friend_proto.GetCountFriendsOut, error) {
-	userID := ctx.Value(config.KeyUUID)
-	if userID == nil {
+	userID := ctx.Value(config.KeyUUID).(string)
+	if userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
-	subscription, subscribers, err := s.dbR.GetCountFriends(userID.(string))
+	subscription, subscribers, err := s.dbR.GetCountFriends(userID)
 	if err != nil {
 		return nil, err
 	}
