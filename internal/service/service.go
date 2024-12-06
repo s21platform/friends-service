@@ -18,11 +18,11 @@ type Server struct {
 func (s *Server) SetFriends(
 	ctx context.Context, in *friend_proto.SetFriendsIn,
 ) (*friend_proto.SetFriendsOut, error) {
-	userID := ctx.Value(config.KeyUUID)
-	if userID == nil {
+	userID := ctx.Value(config.KeyUUID).(string)
+	if userID == "" {
 		return nil, fmt.Errorf("uuid not found in context")
 	}
-	res, err := s.dbR.SetFriend(userID.(string), in.Peer)
+	res, err := s.dbR.SetFriend(userID, in.Peer)
 
 	if err != nil || !res {
 		return nil, err
