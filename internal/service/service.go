@@ -131,3 +131,16 @@ func (s *Server) GetCountFriends(ctx context.Context, in *friend_proto.EmptyFrie
 		Subscribers:  subscribers,
 	}, nil
 }
+
+func (s *Server) IsFriendExist(ctx context.Context, in *friend_proto.IsFriendExistIn) (*friend_proto.IsFriendExistOut, error) {
+	userIDValue := ctx.Value(config.KeyUUID)
+	userID, ok := userIDValue.(string)
+	if !ok || userID == "" {
+		return nil, fmt.Errorf("uuid not found in context")
+	}
+	res, err := s.dbR.IsRowFriendExist(userID, in.Peer)
+	if err != nil {
+		return nil, err
+	}
+	return &friend_proto.IsFriendExistOut{Success: res}, nil
+}

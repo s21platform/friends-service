@@ -9,4 +9,5 @@ type DBRepo interface {
 	SetInvitePeer(initiator, email string) error
 	RemoveFriends(peer1, peer2 string) (bool, error)
 	GetCountFriends(uuid string) (int64, int64, error)
+	IsRowFriendExist(peer1, peer2 string) (bool, error)
 }
