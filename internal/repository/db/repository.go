@@ -50,21 +50,21 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	return peers, nil
 }
 
-func (r *Repository) isRowFriendExist(peer1, peer2 string) (bool, error) {
+func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
 	var res []string
 	err := r.connection.Select(&res, "SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2)
 
-	if err == nil && len(res) != 0 {
+	if err != nil {
+		return false, fmt.Errorf("r.connection.Select: %v", err)
+	} else if len(res) == 0 {
 		return false, nil
-	} else if err != nil {
-		return true, fmt.Errorf("r.connection.Select: %v", err)
 	}
 
 	return true, nil
 }
 
 func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
-	res, err := r.isRowFriendExist(peer1, peer2)
+	res, err := r.IsRowFriendExist(peer1, peer2)
 	if err != nil || !res {
 		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
 	}
@@ -77,7 +77,7 @@ func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 }
 
 func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
-	res, err := r.isRowFriendExist(peer1, peer2)
+	res, err := r.IsRowFriendExist(peer1, peer2)
 	if err != nil || res {
 		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
 	}
@@ -90,7 +90,7 @@ func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 }
 
 func (r *Repository) RemoveSubscribe(peer1, peer2 string) error {
-	friend, err := r.isRowFriendExist(peer1, peer2)
+	friend, err := r.IsRowFriendExist(peer1, peer2)
 	if err != nil {
 		return err
 	} else if friend {
@@ -108,7 +108,9 @@ func (r *Repository) isRowInviteExist(row1, row2 string) (bool, error) {
 	var res []string
 	err := r.connection.Select(&res, "SELECT 1 FROM user_invite WHERE initiator = $1 AND invited = $2", row1, row2)
 
-	if err != nil || len(res) != 0 {
+	if err != nil {
+		return false, fmt.Errorf("r.connection.Select: %v", err)
+	} else if len(res) == 0 {
 		return false, nil
 	}
 

@@ -79,6 +79,21 @@ func (mr *MockDBRepoMockRecorder) GetWhoFollowsPeer(initiator interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWhoFollowsPeer", reflect.TypeOf((*MockDBRepo)(nil).GetWhoFollowsPeer), initiator)
 }
 
+// IsRowFriendExist mocks base method.
+func (m *MockDBRepo) IsRowFriendExist(peer1, peer2 string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsRowFriendExist", peer1, peer2)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsRowFriendExist indicates an expected call of IsRowFriendExist.
+func (mr *MockDBRepoMockRecorder) IsRowFriendExist(peer1, peer2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsRowFriendExist", reflect.TypeOf((*MockDBRepo)(nil).IsRowFriendExist), peer1, peer2)
+}
+
 // RemoveFriends mocks base method.
 func (m *MockDBRepo) RemoveFriends(peer1, peer2 string) (bool, error) {
 	m.ctrl.T.Helper()

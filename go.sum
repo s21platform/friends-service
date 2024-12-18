@@ -50,6 +50,8 @@ github.com/s21platform/friends-proto v0.0.10 h1:5bvjPFPpRIWiH6u3OIQNXb1cUueYNSJF
 github.com/s21platform/friends-proto v0.0.10/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
 github.com/s21platform/friends-proto v0.0.11 h1:crH3s4jxEismCb5DC+OgsqXeC0oZU9BPvC1tSz95JZk=
 github.com/s21platform/friends-proto v0.0.11/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
+github.com/s21platform/friends-proto v0.0.12 h1:EjIwyEs7cq0aTj66mD8cvi74O2AxwvBOFv65nmIeutI=
+github.com/s21platform/friends-proto v0.0.12/go.mod h1:2T40nq/qCJzNd7B7FrmaFqN9i2dte+cMcrZS248XwQI=
 github.com/s21platform/kafka-lib v0.0.4 h1:w6qdLi8Sa3f24xzM1bhAPLsW8mjPlh/qhmxyUwM4/i0=
 github.com/s21platform/kafka-lib v0.0.4/go.mod h1:tmLv0RuMll1rznHyvVU7fSKZCNcZuKdR28bq5mJfjB8=
 github.com/s21platform/metrics-lib v0.0.6 h1:JcB/a/LsxTEdQf0ffT6wlxBirBWn1Dt8BP3fHEfMh4s=
