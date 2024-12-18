@@ -54,7 +54,7 @@ func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
 	var res []string
 	err := r.connection.Select(&res, "SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2)
 
-	if err == nil && len(res) != 0 {
+	if err == nil && len(res) == 0 {
 		return false, nil
 	} else if err != nil {
 		return true, fmt.Errorf("r.connection.Select: %v", err)
