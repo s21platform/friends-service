@@ -68,12 +68,15 @@ func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("failed to check an existing rows in db: %v", err)
 	}
+	if res {
+		return false, nil
+	}
 
 	if _, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer1, peer2); err != nil {
 		return false, fmt.Errorf("failed to set friend to db: %v", err)
 	}
 
-	return res, nil
+	return true, nil
 }
 
 func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
@@ -82,11 +85,15 @@ func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
 	}
 
+	if !res {
+		return false, nil
+	}
+
 	if _, err = r.connection.Exec("DELETE FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2); err != nil {
 		return false, fmt.Errorf("failed to remove friends to db: %v", err)
 	}
 
-	return res, nil
+	return true, nil
 }
 
 func (r *Repository) RemoveSubscribe(peer1, peer2 string) error {
