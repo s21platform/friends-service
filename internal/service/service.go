@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/s21platform/friends-service/internal/config"
 
@@ -28,6 +29,7 @@ func (s *Server) SetFriends(
 		return nil, err
 	}
 
+	log.Println("res set friends", res)
 	return &friend_proto.SetFriendsOut{Success: res}, nil
 }
 
@@ -40,11 +42,12 @@ func (s *Server) RemoveFriends(
 	}
 	res, err := s.dbR.RemoveFriends(userID, in.Peer)
 
-	if err != nil || !res {
+	if err != nil {
 		return nil, err
 	}
 
-	return &friend_proto.RemoveFriendsOut{Success: true}, err
+	log.Println("res remove friends", res)
+	return &friend_proto.RemoveFriendsOut{Success: res}, err
 }
 
 func (s *Server) RemoveSubscribe(

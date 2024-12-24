@@ -78,7 +78,7 @@ func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 
 func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 	res, err := r.IsRowFriendExist(peer1, peer2)
-	if err != nil || res {
+	if err != nil {
 		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
 	}
 
@@ -86,7 +86,7 @@ func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 		return false, fmt.Errorf("failed to remove friends to db: %v", err)
 	}
 
-	return true, nil
+	return res, nil
 }
 
 func (r *Repository) RemoveSubscribe(peer1, peer2 string) error {
