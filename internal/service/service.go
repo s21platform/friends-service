@@ -24,11 +24,11 @@ func (s *Server) SetFriends(
 	}
 	res, err := s.dbR.SetFriend(userID, in.Peer)
 
-	if err != nil || !res {
+	if err != nil {
 		return nil, err
 	}
 
-	return &friend_proto.SetFriendsOut{Success: true}, nil
+	return &friend_proto.SetFriendsOut{Success: res}, nil
 }
 
 func (s *Server) RemoveFriends(
