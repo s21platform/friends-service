@@ -140,7 +140,7 @@ func (s *Server) IsFriendExist(ctx context.Context, in *friend_proto.IsFriendExi
 	}
 	res, err := s.dbR.IsRowFriendExist(userID, in.Peer)
 	if err != nil {
-		return nil, err
+		return &friend_proto.IsFriendExistOut{Success: false}, err
 	}
 	return &friend_proto.IsFriendExistOut{Success: res}, nil
 }

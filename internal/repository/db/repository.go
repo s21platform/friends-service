@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -52,17 +51,16 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 }
 
 func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
-	var res []string
-	err := r.connection.Select(&res, "SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2)
-
+	var exists bool
+	query := `SELECT EXISTS (
+        SELECT 1 FROM friends WHERE initiator = $1 AND user_id = $2
+    )`
+	err := r.connection.Get(&exists, query, peer1, peer2)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return false, nil
-		}
-		return false, fmt.Errorf("failed to get friends exist data from db: %v", err)
+		return false, fmt.Errorf("failed to execute query: %v", err)
 	}
 
-	return true, nil
+	return exists, nil
 }
 
 func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
