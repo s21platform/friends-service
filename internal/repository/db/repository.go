@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -22,7 +23,7 @@ func connect(cfg *config.Config) (*Repository, error) {
 
 	db, err := sqlx.Connect("postgres", conStr)
 	if err != nil {
-		return nil, fmt.Errorf("sql.Open: %w", err)
+		return nil, fmt.Errorf("failed to connect db: %w", err)
 	}
 
 	return &Repository{db}, nil
@@ -33,7 +34,7 @@ func (r *Repository) GetWhoFollowsPeer(initiator string) ([]string, error) {
 	err := r.connection.Select(&result, "SELECT initiator FROM friends WHERE user_id = $1", initiator)
 
 	if err != nil {
-		return nil, fmt.Errorf("r.connection.Select: %v", err)
+		return nil, fmt.Errorf("failed to get who follows from dbt: %v", err)
 	}
 
 	return result, nil
@@ -44,7 +45,7 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	err := r.connection.Select(&peers, "SELECT user_id FROM friends WHERE initiator = $1", initiator)
 
 	if err != nil {
-		return nil, fmt.Errorf("r.connection.Select: %v", err)
+		return nil, fmt.Errorf("failed to get peer follows from db: %v", err)
 	}
 
 	return peers, nil
@@ -55,9 +56,10 @@ func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
 	err := r.connection.Select(&res, "SELECT user_id FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2)
 
 	if err != nil {
-		return false, fmt.Errorf("r.connection.Select: %v", err)
-	} else if len(res) == 0 {
-		return false, nil
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to get friends exist data from db: %v", err)
 	}
 
 	return true, nil
@@ -70,7 +72,7 @@ func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 	}
 
 	if _, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer1, peer2); err != nil {
-		return false, fmt.Errorf("r.connection.Exec: %v", err)
+		return false, fmt.Errorf("failed to set friend to db: %v", err)
 	}
 
 	return true, nil
@@ -83,7 +85,7 @@ func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 	}
 
 	if _, err = r.connection.Exec("DELETE FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2); err != nil {
-		return false, fmt.Errorf("r.connection.Exec: %v", err)
+		return false, fmt.Errorf("failed to remove friends to db: %v", err)
 	}
 
 	return true, nil
@@ -163,7 +165,7 @@ func (r *Repository) GetUUIDForEmail(email string) ([]string, error) {
 		email)
 
 	if err != nil {
-		return nil, fmt.Errorf("r.connection.Select: %v", err)
+		return nil, fmt.Errorf("failed to get UUID for email from db: %v", err)
 	}
 
 	return res, nil
@@ -176,7 +178,7 @@ func (r *Repository) UpdateUserInvite(initiator, invited string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("r.connection.Exec UPDATE user_invite: %v", err)
+		return fmt.Errorf("failed to update user invite to db: %v", err)
 	}
 
 	return nil
