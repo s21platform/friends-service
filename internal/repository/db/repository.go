@@ -65,15 +65,15 @@ func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
 
 func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 	res, err := r.IsRowFriendExist(peer1, peer2)
-	if err != nil || !res {
-		return false, fmt.Errorf("r.isRowFriendExist: %v", err)
+	if err != nil {
+		return false, fmt.Errorf("failed to check an existing rows in db: %v", err)
 	}
 
 	if _, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer1, peer2); err != nil {
 		return false, fmt.Errorf("failed to set friend to db: %v", err)
 	}
 
-	return true, nil
+	return res, nil
 }
 
 func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
