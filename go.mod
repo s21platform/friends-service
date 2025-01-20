@@ -10,7 +10,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/s21platform/friends-proto v0.0.12
 	github.com/s21platform/kafka-lib v0.0.4
-	github.com/s21platform/metrics-lib v0.0.6
+	github.com/s21platform/metrics-lib v0.0.8
 	github.com/s21platform/user-proto v0.0.0-20240803211755-588c0944e1fd
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/grpc v1.65.0
@@ -18,11 +18,11 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
+	github.com/alexcesaro/statsd v2.0.0+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
-	github.com/marpaia/graphite-golang v0.0.0-20190519024811-caf161d2c2b1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
