@@ -34,6 +34,11 @@ func (s *Server) SetFriends(
 		return nil, err
 	}
 
+	if !res {
+		logger.Info("user already in friends")
+		return &friend_proto.SetFriendsOut{Success: false}, nil
+	}
+
 	return &friend_proto.SetFriendsOut{Success: res}, nil
 }
 
