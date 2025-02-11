@@ -10,6 +10,7 @@ type key string
 
 const KeyUUID key = key("uuid")
 const KeyMetrics = key("metrics")
+const KeyLogger = key("logger")
 
 type Config struct {
 	Service  Service
@@ -18,11 +19,13 @@ type Config struct {
 	User     User
 	Metrics  Metrics
 	Platform Platform
+	Logger   Logger
 }
 
 type Service struct {
 	Port string `env:"FRIENDS_SERVICE_PORT"`
 	Host string `env:"FRIENDS_SERVICE_HOST"`
+	Name string `env:"FRIENDS_SERVICE_NAME"`
 }
 
 type ReadEnvBD struct {
@@ -53,6 +56,11 @@ type Metrics struct {
 
 type Platform struct {
 	Env string `env:"ENV"`
+}
+
+type Logger struct {
+	Host string `env:"LOGGER_SERVICE_HOST"`
+	Port string `env:"LOGGER_SERVICE_PORT"`
 }
 
 func MustLoad() *Config {

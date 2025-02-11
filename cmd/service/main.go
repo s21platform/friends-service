@@ -7,13 +7,13 @@ import (
 	"os"
 
 	"github.com/s21platform/friends-service/internal/infra"
+	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
-
-	"github.com/s21platform/friends-service/internal/rpc/user"
 
 	friends "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
 	db "github.com/s21platform/friends-service/internal/repository/db"
+	"github.com/s21platform/friends-service/internal/rpc/user"
 	"github.com/s21platform/friends-service/internal/service"
 	"google.golang.org/grpc"
 )
@@ -22,6 +22,8 @@ func main() {
 	// чтение конфига
 	cfg := config.MustLoad()
 	dbRepo, err := db.New(cfg)
+
+	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
 	if err != nil {
 		log.Printf("db.New: %v", err)
@@ -42,6 +44,7 @@ func main() {
 			infra.UnaryInterceptor,
 			infra.MetricsInterceptor(metrics),
 		),
+		grpc.ChainUnaryInterceptor(infra.Logger(logger)),
 	)
 	friends.RegisterFriendsServiceServer(s, thisService)
 

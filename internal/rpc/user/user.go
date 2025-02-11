@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	logger_lib "github.com/s21platform/logger-lib"
+
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/s21platform/friends-service/internal/config"
@@ -18,9 +20,12 @@ type Handle struct {
 }
 
 func (h *Handle) IsUserExistByUUID(ctx context.Context, userUUID string) (bool, error) {
+	logger := logger_lib.FromContext(ctx, config.KeyLogger)
+	logger.AddFuncName("IsUserExistByUUID")
 	res, err := h.client.IsUserExistByUUID(ctx, &user_proto.IsUserExistByUUIDIn{Uuid: userUUID})
 
 	if err != nil {
+		logger.Error("failed to answer user-service")
 		return false, fmt.Errorf("error client.IsUserExistByUUID: %w", err)
 	}
 
