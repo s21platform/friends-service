@@ -1,4 +1,4 @@
-package new_friend
+package notification
 
 import (
 	"context"
@@ -40,14 +40,14 @@ func (h *Handler) Handler(ctx context.Context, in []byte) {
 	var msg new_friend_register.NewFriendRegister
 	err := convertMessage(in, &msg)
 	if err != nil {
-		m.Increment("new_friend.error")
+		m.Increment("notification.error")
 		log.Printf("failed to convert message: %v", err)
 		return
 	}
 
 	uuids, err := h.dbR.GetUUIDForEmail(msg.Email)
 	if err != nil {
-		m.Increment("new_friend.error")
+		m.Increment("notification.error")
 		log.Printf("failed to get uuid for email: %v", err)
 		return
 	}
@@ -59,7 +59,7 @@ func (h *Handler) Handler(ctx context.Context, in []byte) {
 		}
 		err := h.nnf.ProduceMessage(msg)
 		if err != nil {
-			m.Increment("new_friend.error")
+			m.Increment("notification.error")
 			log.Printf("failed to produce message for %s: %v", uuid, err)
 		}
 	}
