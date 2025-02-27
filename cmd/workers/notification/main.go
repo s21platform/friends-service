@@ -4,20 +4,20 @@ import (
 	"context"
 	"log"
 
-	"github.com/s21platform/friends-service/internal/databus/new_friend"
+	"github.com/s21platform/friends-service/internal/databus/notification"
 	kafkalib "github.com/s21platform/kafka-lib"
 	"github.com/s21platform/metrics-lib/pkg"
 
 	"github.com/s21platform/friends-service/internal/config"
-	"github.com/s21platform/friends-service/internal/repository/db"
+	"github.com/s21platform/friends-service/internal/repository/postgres"
 )
 
 func main() {
 	cfg := config.MustLoad()
-	dbRepo, err := db.New(cfg)
+	dbRepo, err := postgres.New(cfg)
 
 	if err != nil {
-		log.Fatalf("db.New: %v", err)
+		log.Fatalf("postgres.New: %v", err)
 	}
 
 	metrics, err := pkg.NewMetrics(cfg.Metrics.Host, cfg.Metrics.Port, "friends", cfg.Platform.Env)
@@ -37,7 +37,7 @@ func main() {
 	notificationNewFriendProducer := kafkalib.NewProducer(cfg.Kafka.Server, cfg.Kafka.NotificationNewFriendTopic)
 
 	// Kafka Handlers
-	NewFriendHandler := new_friend.New(dbRepo, notificationNewFriendProducer)
+	NewFriendHandler := notification.New(dbRepo, notificationNewFriendProducer)
 
 	// Register Handlers
 	newFriendConsumer.RegisterHandler(ctx, NewFriendHandler.Handler)

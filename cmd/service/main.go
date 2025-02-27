@@ -12,7 +12,7 @@ import (
 
 	friends "github.com/s21platform/friends-proto/friends-proto"
 	"github.com/s21platform/friends-service/internal/config"
-	db "github.com/s21platform/friends-service/internal/repository/db"
+	db "github.com/s21platform/friends-service/internal/repository/postgres"
 	"github.com/s21platform/friends-service/internal/rpc/user"
 	"github.com/s21platform/friends-service/internal/service"
 	"google.golang.org/grpc"
@@ -26,7 +26,7 @@ func main() {
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
 	if err != nil {
-		log.Printf("db.New: %v", err)
+		log.Printf("postgres.New: %v", err)
 		os.Exit(1)
 	}
 	defer dbRepo.Close()

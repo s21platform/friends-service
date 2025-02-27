@@ -1,4 +1,4 @@
-package new_friend
+package notification
 
 type DBRepo interface {
 	GetUUIDForEmail(email string) ([]string, error)

@@ -1,4 +1,4 @@
-package db
+package postgres
 
 import (
 	"fmt"
@@ -16,13 +16,13 @@ type Repository struct {
 }
 
 func connect(cfg *config.Config) (*Repository, error) {
-	// Connect db
+	// Connect postgres
 	conStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.Postgres.User, cfg.Postgres.Password, cfg.Postgres.Host, cfg.Postgres.Port, cfg.Postgres.Database)
 
 	db, err := sqlx.Connect("postgres", conStr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect db: %w", err)
+		return nil, fmt.Errorf("failed to connect postgres: %w", err)
 	}
 
 	return &Repository{db}, nil
@@ -44,7 +44,7 @@ func (r *Repository) GetPeerFollows(initiator string) ([]string, error) {
 	err := r.connection.Select(&peers, "SELECT user_id FROM friends WHERE initiator = $1", initiator)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to get peer follows from db: %v", err)
+		return nil, fmt.Errorf("failed to get peer follows from postgres: %v", err)
 	}
 
 	return peers, nil
@@ -66,14 +66,14 @@ func (r *Repository) IsRowFriendExist(peer1, peer2 string) (bool, error) {
 func (r *Repository) SetFriend(peer1, peer2 string) (bool, error) {
 	res, err := r.IsRowFriendExist(peer1, peer2)
 	if err != nil {
-		return false, fmt.Errorf("failed to check an existing rows in db: %v", err)
+		return false, fmt.Errorf("failed to check an existing rows in postgres: %v", err)
 	}
 	if res {
 		return false, nil
 	}
 
 	if _, err = r.connection.Exec("INSERT INTO friends (initiator, user_id) VALUES ($1, $2)", peer1, peer2); err != nil {
-		return false, fmt.Errorf("failed to set friend to db: %v", err)
+		return false, fmt.Errorf("failed to set friend to postgres: %v", err)
 	}
 
 	return true, nil
@@ -90,7 +90,7 @@ func (r *Repository) RemoveFriends(peer1, peer2 string) (bool, error) {
 	}
 
 	if _, err = r.connection.Exec("DELETE FROM friends WHERE initiator = $1 AND user_id = $2", peer1, peer2); err != nil {
-		return false, fmt.Errorf("failed to remove friends to db: %v", err)
+		return false, fmt.Errorf("failed to remove friends to postgres: %v", err)
 	}
 
 	return true, nil
@@ -170,7 +170,7 @@ func (r *Repository) GetUUIDForEmail(email string) ([]string, error) {
 		email)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to get UUID for email from db: %v", err)
+		return nil, fmt.Errorf("failed to get UUID for email from postgres: %v", err)
 	}
 
 	return res, nil
@@ -183,7 +183,7 @@ func (r *Repository) UpdateUserInvite(initiator, invited string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to update user invite to db: %v", err)
+		return fmt.Errorf("failed to update user invite to postgres: %v", err)
 	}
 
 	return nil
