@@ -11,9 +11,9 @@ import (
 	"github.com/s21platform/metrics-lib/pkg"
 
 	friends "github.com/s21platform/friends-proto/friends-proto"
+	"github.com/s21platform/friends-service/internal/client/user"
 	"github.com/s21platform/friends-service/internal/config"
 	db "github.com/s21platform/friends-service/internal/repository/postgres"
-	"github.com/s21platform/friends-service/internal/rpc/user"
 	"github.com/s21platform/friends-service/internal/service"
 	"google.golang.org/grpc"
 )
